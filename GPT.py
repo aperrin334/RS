@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.optimize import linprog
+import pandas as pd
 
 def solve_flux(prod, demand, qmax):
     prod = np.array(prod)
@@ -86,7 +87,7 @@ def solve_flux(prod, demand, qmax):
     r_pos = x[offset_r_pos:offset_r_pos + N]
     r_neg = x[offset_r_neg:offset_r_neg + N]
 
-    # (optionnel) nettoyer tout petit négatif dû à la numérqiue
+    # (optionnel) nettoyer tout petit négatif dû à la numérique
     eps = 1e-9
     r_pos = np.where(np.abs(r_pos) < eps, 0.0, r_pos)
     r_neg = np.where(np.abs(r_neg) < eps, 0.0, r_neg)
@@ -94,7 +95,7 @@ def solve_flux(prod, demand, qmax):
     return q, r_pos, r_neg
 
 
-
+# test à un instant t
 prod  = [10,  5,  7, 9]
 demand = [6, 10, 7, 4]
 qmax = 4
@@ -104,3 +105,7 @@ q, r_pos, r_neg = solve_flux(prod, demand, qmax)
 print("Flux :\n", q)
 print("r⁺ :", r_pos)
 print("r⁻ :", r_neg)
+
+
+#production du pays A pour tous les instants de 0 à N//3 - 1
+#prodA = pd.read_csv('prodA.csv')
