@@ -71,7 +71,8 @@ except FileNotFoundError:
 prod_trimestriel_3_pays = vecteur_production
 demand_trimestriel_3_pays = vecteur_demande[:len(prod_trimestriel_3_pays)]  # S'assurer que la demande a la même longueur que la production
 qmax = 4
-N = 3 
+N = 3
+T = int(len(prod_trimestriel_3_pays)/N)
 
 # print(prod_trimestriel_3_pays[:10])
 # print(demand_trimestriel_3_pays[:10])
@@ -161,14 +162,21 @@ def solve_flux(prod, demand, qmax, N):
 
     x = res.x
 
+
+    
     # Reconstruct q using q_index (robuste)
-    q = np.zeros((N, N))
+    # Initialisation de q comme un tableau 3D (T trimestres, N pays, N pays)
+    q = np.zeros((T, N, N))
     idx = 0
-    for t in range(int(T)):
+    
+    # La reconstruction est maintenant: q[t, i, j] = x[idx]
+    for t in range(T):
         for j in range(N):
             for i in range(N):
+                # On ne stocke que les flux inter-pays (i != j)
                 if i != j:
-                    q[i][j] = x[idx]
+                    # q[t, i, j] est le flux du pays i vers le pays j au trimestre t
+                    q[t, i, j] = x[idx]
                     idx += 1
 
     r_pos = x[offset_r_pos:offset_r_pos + N*T]
@@ -208,11 +216,48 @@ print("\n")
 nb_r_pos_positifs = sum(1 for val in r_pos if val > 0)
 nb_r_neg_positifs = sum(1 for val in r_neg if val > 0)
 
+nb_r_pos_positifs_A = sum(1 for val in r_pos[:T] if val > 0)
+nb_r_neg_positifs_A = sum(1 for val in r_neg[:T] if val > 0)
+nb_r_pos_positifs_B = sum(1 for val in r_pos[T:T*2] if val > 0)
+nb_r_neg_positifs_B = sum(1 for val in r_neg[T:T*2] if val > 0)
+nb_r_pos_positifs_C = sum(1 for val in r_pos[T*2:] if val > 0)
+nb_r_neg_positifs_C = sum(1 for val in r_neg[T*2:] if val > 0)
+
+
 print("----- Statistiques r⁺ et r⁻ -----")
 print("nb heures total :", len(r_pos))
 print("nb_r_pos_positifs:", nb_r_pos_positifs)
 print("nb_r_neg_positifs:", nb_r_neg_positifs)
 print("proportion de r negatifs", nb_r_neg_positifs / len(r_neg))
-print("\n")
 print("somme des r :", nb_r_pos_positifs + nb_r_neg_positifs )
 print("nb r nuls :", len(r_pos) - (nb_r_pos_positifs + nb_r_neg_positifs))
+
+print("---------------------------------------")
+
+
+print("Pays A:")
+print("nb_r_pos_positifs:", nb_r_pos_positifs_A)
+print("nb_r_neg_positifs:", nb_r_neg_positifs_A)
+print("proportion de r negatifs", nb_r_neg_positifs_A / len(r_neg[:T]))
+print("somme des r :", nb_r_pos_positifs_A + nb_r_neg_positifs_A )
+print("nb r nuls :", len(r_pos[:T]) - (nb_r_pos_positifs_A + nb_r_neg_positifs_A))
+
+print("---------------------------------------")
+
+print("Pays B:")
+print("nb_r_pos_positifs:", nb_r_pos_positifs_B)
+print("nb_r_neg_positifs:", nb_r_neg_positifs_B)
+print("proportion de r negatifs", nb_r_neg_positifs_B / len(r_neg[T:T*2]))
+print("somme des r :", nb_r_pos_positifs_B + nb_r_neg_positifs_B )
+print("nb r nuls :", len(r_pos[T:T*2]) - (nb_r_pos_positifs_B + nb_r_neg_positifs_B))
+
+print("---------------------------------------")
+
+print("Pays C:")
+print("nb_r_pos_positifs:", nb_r_pos_positifs_C)
+print("nb_r_neg_positifs:", nb_r_neg_positifs_C)
+print("proportion de r negatifs", nb_r_neg_positifs_C / len(r_neg[T*2:]))
+
+print("somme des r :", nb_r_pos_positifs_C + nb_r_neg_positifs_C )
+print("nb r nuls :", len(r_pos[T*2:]) - (nb_r_pos_positifs_C + nb_r_neg_positifs_C))
+
