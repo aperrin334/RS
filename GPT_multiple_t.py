@@ -1,6 +1,81 @@
 import numpy as np
 from scipy.optimize import linprog
 
+import pandas as pd
+import numpy as np
+
+# 1. Définition des noms de fichiers
+fichiers_production = ['prodA.csv', 'prodB.csv', 'prodC.csv']
+fichier_demande = 'demand2050_ademe.csv'
+
+# --- Traitement des fichiers de production (prodA, prodB, prodC) ---
+
+# Liste pour stocker les colonnes 'Production_Elec' de chaque fichier
+liste_production_series = []
+
+# print("Chargement des fichiers de production...")
+for nom_fichier in fichiers_production:
+    try:
+        # Lecture du fichier CSV
+        df = pd.read_csv(nom_fichier)
+        
+        # Sélection de la colonne 'Production_Elec' et ajout à la liste
+        # On s'assure que toutes les données sont numériques (float)
+        liste_production_series.append(df['Production_Elec'].astype(float))
+        # print(f"  - {nom_fichier} chargé avec succès.")
+    except FileNotFoundError:
+        print(f"Erreur : Le fichier {nom_fichier} n'a pas été trouvé.")
+        
+# Concaténation des séries en une seule et conversion en np.array
+# `pd.concat` va joindre les séries les unes à la suite des autres
+if liste_production_series:
+    production_concatenée = pd.concat(liste_production_series, ignore_index=True)
+    vecteur_production = production_concatenée.to_numpy()
+    
+    # print("\n--- Résultat Vecteur Production (3 fichiers concaténés) ---")
+    # print(f"Forme (Shape) du vecteur : {vecteur_production.shape}")
+    # print(f"Type de données (Dtype) : {vecteur_production.dtype}")
+    # print("Aperçu (10 premières valeurs) :")
+    # print(vecteur_production[:10])
+else:
+    vecteur_production = np.array([])
+    # print("Aucun fichier de production n'a pu être chargé. Le vecteur de production est vide.")
+
+
+# --- Traitement du fichier de demande (demand2050_ademe.csv) ---
+
+# print("\nChargement du fichier de demande...")
+try:
+    # Lecture du fichier CSV. Attention : il n'y a pas d'en-tête (header=None)
+    # et nous devons ignorer la première colonne (l'index de la donnée)
+    df_demande = pd.read_csv(fichier_demande, header=None)
+    
+    # Le fichier a la forme : Index, Valeur. Nous voulons la colonne des Valeurs (indice 1)
+    vecteur_demande = df_demande.iloc[:, 1].astype(float).to_numpy()
+    
+    # print(f"  - {fichier_demande} chargé avec succès.")
+    
+    # print("\n--- Résultat Vecteur Demande ---")
+    # print(f"Forme (Shape) du vecteur : {vecteur_demande.shape}")
+    # print(f"Type de données (Dtype) : {vecteur_demande.dtype}")
+    # print("Aperçu (10 premières valeurs) :")
+    # print(vecteur_demande[:10])
+
+except FileNotFoundError:
+    vecteur_demande = np.array([])
+    print(f"Erreur : Le fichier {fichier_demande} n'a pas été trouvé.")
+    
+# Les deux vecteurs numpy.array sont maintenant disponibles
+# dans les variables `vecteur_production` et `vecteur_demande`.
+
+prod_trimestriel_3_pays = vecteur_production
+demand_trimestriel_3_pays = vecteur_demande[:len(prod_trimestriel_3_pays)]  # S'assurer que la demande a la même longueur que la production
+qmax = 4
+N = 3 
+
+# print(prod_trimestriel_3_pays[:10])
+# print(demand_trimestriel_3_pays[:10])
+
 # prod : vecteur avec l'entièreté des prod à chaque temps t pour chaque pays (taille = N*T)
 # demand : vecteur avec l'entièreté des demand à chaque temps t pour chaque pays (taille = N*T)
 # qmax : capacité maximale de flux entre deux pays
@@ -10,7 +85,7 @@ from scipy.optimize import linprog
 def solve_flux(prod, demand, qmax, N):
     prod = np.array(prod)
     demand = np.array(demand)
-    T = len(prod)/N
+    T = int(len(prod)/N)
 
     n_q = N*(N-1)*T
     offset_r_pos = n_q
@@ -34,8 +109,8 @@ def solve_flux(prod, demand, qmax, N):
             row = np.zeros(nvar)
             for j in range(N):
                 if i != j:
-                    row[q_index(i, j) + t*N*(N-1)] -= 1   # outflows
-                    row[q_index(j, i) + t*N*(N-1)] += 1   # inflows
+                    row[q_index(i, j, t)] -= 1   # outflows
+                    row[q_index(j, i, t)] += 1   # inflows
 
             # ici pour les r_pos,t - r_neg,t = r_t
             row[offset_r_pos + i + t*N] = 1
@@ -89,14 +164,15 @@ def solve_flux(prod, demand, qmax, N):
     # Reconstruct q using q_index (robuste)
     q = np.zeros((N, N))
     idx = 0
-    for j in range(N):
-        for i in range(N):
-            if i != j:
-                q[i][j] = x[idx]
-                idx += 1
+    for t in range(int(T)):
+        for j in range(N):
+            for i in range(N):
+                if i != j:
+                    q[i][j] = x[idx]
+                    idx += 1
 
-    r_pos = x[offset_r_pos:offset_r_pos + N]
-    r_neg = x[offset_r_neg:offset_r_neg + N]
+    r_pos = x[offset_r_pos:offset_r_pos + N*T]
+    r_neg = x[offset_r_neg:offset_r_neg + N*T]
 
     # (optionnel) nettoyer tout petit négatif dû à la numérqiue
     eps = 1e-9
@@ -104,7 +180,6 @@ def solve_flux(prod, demand, qmax, N):
     r_neg = np.where(np.abs(r_neg) < eps, 0.0, r_neg)
 
     return q, r_pos, r_neg
-
 
 
 
@@ -119,12 +194,25 @@ def solve_flux(prod, demand, qmax, N):
 # print("r⁺ :", r_pos)
 # print("r⁻ :", r_neg)
 
-prod2  = [10,  5,  7]
-demand2 = [6, 10, 7]
-qmax2 = 4
+# prod2  = [10,  5,  7]
+# demand2 = [6, 10, 7]
+# qmax2 = 4
 
-q, r_pos, r_neg = solve_flux(prod2, demand2, qmax2)
+q, r_pos, r_neg = solve_flux(prod_trimestriel_3_pays, demand_trimestriel_3_pays, qmax, N)
 
 print("Flux :\n", q)
 print("r⁺ :", r_pos)
 print("r⁻ :", r_neg)
+print("\n")
+
+nb_r_pos_positifs = sum(1 for val in r_pos if val > 0)
+nb_r_neg_positifs = sum(1 for val in r_neg if val > 0)
+
+print("----- Statistiques r⁺ et r⁻ -----")
+print("nb heures total :", len(r_pos))
+print("nb_r_pos_positifs:", nb_r_pos_positifs)
+print("nb_r_neg_positifs:", nb_r_neg_positifs)
+print("proportion de r negatifs", nb_r_neg_positifs / len(r_neg))
+print("\n")
+print("somme des r :", nb_r_pos_positifs + nb_r_neg_positifs )
+print("nb r nuls :", len(r_pos) - (nb_r_pos_positifs + nb_r_neg_positifs))
