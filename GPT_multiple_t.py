@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.optimize import linprog
-
 import pandas as pd
 import numpy as np
 
@@ -74,8 +73,6 @@ qmax = 4
 N = 3
 T = int(len(prod_trimestriel_3_pays)/N)
 
-# print(prod_trimestriel_3_pays[:10])
-# print(demand_trimestriel_3_pays[:10])
 
 # prod : vecteur avec l'entièreté des prod à chaque temps t pour chaque pays (taille = N*T)
 # demand : vecteur avec l'entièreté des demand à chaque temps t pour chaque pays (taille = N*T)
@@ -191,21 +188,6 @@ def solve_flux(prod, demand, qmax, N):
 
 
 
-
-# prod  = [10,  5,  7, 9]
-# demand = [6, 10, 7, 4]
-# qmax = 4
-
-# q, r_pos, r_neg = solve_flux(prod, demand, qmax)
-
-# print("Flux :\n", q)
-# print("r⁺ :", r_pos)
-# print("r⁻ :", r_neg)
-
-# prod2  = [10,  5,  7]
-# demand2 = [6, 10, 7]
-# qmax2 = 4
-
 q, r_pos, r_neg = solve_flux(prod_trimestriel_3_pays, demand_trimestriel_3_pays, qmax, N)
 
 print("Flux :\n", q)
@@ -260,4 +242,109 @@ print("proportion de r negatifs", nb_r_neg_positifs_C / len(r_neg[T*2:]))
 
 print("somme des r :", nb_r_pos_positifs_C + nb_r_neg_positifs_C )
 print("nb r nuls :", len(r_pos[T*2:]) - (nb_r_pos_positifs_C + nb_r_neg_positifs_C))
+
+
+
+
+# ============================================================
+# ===               GRAPHIQUES D’INTERPRÉTATION            ===
+# ============================================================
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# ---- Préparation des données ----
+
+# r_pos et r_neg sont des vecteurs de taille N*T : on les remet en matrices T x N
+r_pos_mat = r_pos.reshape(T, N)
+r_neg_mat = r_neg.reshape(T, N)
+
+# Noms des pays
+pays = ["A", "B", "C"]
+
+# ============================================================
+# === 1) GRAPHIQUE r⁺ ET r⁻ POUR CHAQUE PAYS DANS LE TEMPS  ===
+# ============================================================
+
+plt.figure(figsize=(12, 6))
+
+for i in range(N):
+    plt.plot(r_pos_mat[:, i], label=f"r⁺ {pays[i]}")
+    plt.plot(r_neg_mat[:, i], label=f"r⁻ {pays[i]}", linestyle="--")
+
+plt.title("Évolution temporelle de r⁺ et r⁻")
+plt.xlabel("Trimestre")
+plt.ylabel("Valeur")
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+
+# ============================================================
+# === 2) HEATMAPS DES FLUX q(i→j) POUR CHAQUE TRIMESTRE     ===
+# ============================================================
+
+for t in range(T):
+    plt.figure(figsize=(5, 4))
+    plt.imshow(q[t], vmin=0, vmax=qmax)
+    plt.colorbar(label="Flux q(i→j)")
+    plt.title(f"Flux entre pays – trimestre {t}")
+    plt.xlabel("Destination")
+    plt.ylabel("Source")
+    plt.xticks(range(N), pays)
+    plt.yticks(range(N), pays)
+    plt.tight_layout()
+    plt.show()
+
+
+# ============================================================
+# === 3) FLUX TOTAUX EXPORTÉS / IMPORTÉS PAR PAYS            ===
+# ============================================================
+
+flux_export = np.sum(q, axis=(0, 2))   # somme sur t et j (sortant)
+flux_import = np.sum(q, axis=(0, 1))   # somme sur t et i (entrant)
+
+x = np.arange(N)
+w = 0.3
+
+plt.figure(figsize=(10, 5))
+plt.bar(x - w, flux_export, width=w, label="Export total")
+plt.bar(x + w, flux_import, width=w, label="Import total")
+
+plt.xticks(x, pays)
+plt.title("Flux total exporté / importé par pays")
+plt.ylabel("Énergie transférée")
+plt.legend()
+plt.grid(True, axis='y')
+plt.tight_layout()
+plt.show()
+
+
+# ============================================================
+# === 4) PRODUCTION VS DEMANDE AVEC r⁺/r⁻ SUPERPOSÉS         ===
+# ============================================================
+
+prod_mat = prod_trimestriel_3_pays.reshape(T, N)
+dem_mat = demand_trimestriel_3_pays.reshape(T, N)
+
+for i in range(N):
+    plt.figure(figsize=(10, 5))
+
+    plt.plot(prod_mat[:, i], label="Production")
+    plt.plot(dem_mat[:, i], label="Demande")
+    plt.plot(r_pos_mat[:, i], label="r⁺", linestyle="--")
+    plt.plot(r_neg_mat[:, i], label="r⁻", linestyle="--")
+
+    plt.title(f"Pays {pays[i]} – Production, demande et r")
+    plt.xlabel("Trimestre")
+    plt.ylabel("kWh (OU unité)")
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+
+print("📊 Graphiques générés.")
+
 
