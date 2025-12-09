@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.optimize import linprog
-import pandas as pd
 
 def solve_flux(prod, demand, qmax):
     prod = np.array(prod)
@@ -22,15 +21,16 @@ def solve_flux(prod, demand, qmax):
         if i == j:
             raise ValueError("i should not equal j")
         return i*(N-1) + (j if j < i else j - 1)
-
+    # construction matrice des contraintes 
     for i in range(N):
         row = np.zeros(nvar)
         for j in range(N):
             if i != j:
                 row[q_index(i, j)] -= 1   # outflows
-        for j in range(N):
-            if i != j:
                 row[q_index(j, i)] += 1   # inflows
+        # for j in range(N):
+        #     if i != j:
+        #         row[q_index(j, i)] += 1   # inflows
 
         # r = r_pos - r_neg
         row[offset_r_pos + i] = 1
@@ -40,7 +40,11 @@ def solve_flux(prod, demand, qmax):
         b_eq.append(prod[i] - demand[i])
 
     A_eq = np.array(A_eq)
+    print("A_eq:")
+    print(A_eq)
     b_eq = np.array(b_eq)
+    print("b_eq:")
+    print(b_eq)
 
     Q = prod - demand
 
@@ -87,7 +91,7 @@ def solve_flux(prod, demand, qmax):
     r_pos = x[offset_r_pos:offset_r_pos + N]
     r_neg = x[offset_r_neg:offset_r_neg + N]
 
-    # (optionnel) nettoyer tout petit négatif dû à la numérique
+    # (optionnel) nettoyer tout petit négatif dû à la numérqiue
     eps = 1e-9
     r_pos = np.where(np.abs(r_pos) < eps, 0.0, r_pos)
     r_neg = np.where(np.abs(r_neg) < eps, 0.0, r_neg)
@@ -95,17 +99,25 @@ def solve_flux(prod, demand, qmax):
     return q, r_pos, r_neg
 
 
-# test à un instant t
-prod  = [10,  5,  7, 9]
-demand = [6, 10, 7, 4]
-qmax = 4
 
-q, r_pos, r_neg = solve_flux(prod, demand, qmax)
+
+
+# prod  = [10,  5,  7, 9]
+# demand = [6, 10, 7, 4]
+# qmax = 4
+
+# q, r_pos, r_neg = solve_flux(prod, demand, qmax)
+
+# print("Flux :\n", q)
+# print("r⁺ :", r_pos)
+# print("r⁻ :", r_neg)
+
+prod2  = [10,  5,  7]
+demand2 = [6, 10, 7]
+qmax2 = 4
+
+q, r_pos, r_neg = solve_flux(prod2, demand2, qmax2)
 
 print("Flux :\n", q)
 print("r⁺ :", r_pos)
 print("r⁻ :", r_neg)
-
-
-#production du pays A pour tous les instants de 0 à N//3 - 1
-#prodA = pd.read_csv('prodA.csv')
