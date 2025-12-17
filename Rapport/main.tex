@@ -1,0 +1,140 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[french]{babel}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=3.1cm,right=2.6cm,marginparwidth=1.75cm]{geometry}
+
+% packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{lastpage}
+\usepackage{bbm}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{subfigure}
+\usepackage{setspace}
+\usepackage[T1]{fontenc}
+\usepackage{pdfpages}
+
+
+
+\title{
+    \vspace{1.5cm} Rapport de projet Reading Seminar \\ 
+    \vspace{0.25cm}
+    \LARGE{\textbf{Optimisation de la gestion d’un réseau électrique}}
+}
+
+\author{Aurore Davalan, Anaïs Noé-Achour, Alicia Perrin\\[0,5cm]{\small Tuteur : Aude Rondepierre et Charles Dossal}}
+
+
+
+% Configuration de l'en-tête et du pied de page
+\RequirePackage{fancyhdr}
+\pagestyle{fancy}
+\fancyfoot[C]{\today}
+\fancyfoot[R]{}
+
+\begin{document}
+
+\setlength{\headheight}{20pt}
+
+% Configuration du pied de page
+\fancyfoot[C]{\today}
+\fancyfoot[R]{}
+\singlespacing{}
+
+\maketitle
+\vspace{0.5cm}
+\hrule
+\vspace{1cm}
+
+\newpage
+
+%ECRIRE ICI ------------------------------------------------------------------------------------------------------------------------------------
+
+\section*{Introduction}
+Explication du cahier des charges (il faudra mieux rédiger):
+
+Ce projet avait pour but initial de découvrir et approfondir les notions de mix électrique et de scénario de consommation, le fonctionnement du mix électrique et les échanges à l’échelle européenne, le modèle EOLES et la programmation linéaire. Des recherches devaient être effectuées sur le fonctionnement des algoritmes d'optimisation sur des graphes orientés.
+
+%JUSQU'A LA -----------------------------------------------------------------------------------------------------------------------------------
+
+\newpage
+
+
+% Nouvelle page pour la table des matières
+\newpage
+\pagestyle{fancy}
+
+% Configuration du pied de page
+\fancyfoot[C]{\today}
+\fancyfoot[R]{}
+\singlespacing{}
+\tableofcontents
+
+% Réinitialiser la numérotation des pages
+\newpage
+\pagenumbering{arabic}
+\pagestyle{fancy}
+
+% Configuration du pied de page
+\fancyfoot[C]{\today}
+\fancyfoot[R]{\thepage\ / \pageref{LastPage}}
+% Nettoyage de l'en-tête
+\fancyhead{}
+\fancyhead[L]{\nouppercase{\leftmark}} % affiche seulement la section
+\fancyhead[R]{}
+
+
+%ECRIRE ICI ------------------------------------------------------------------------------------------------------------------------------------
+
+\section{Fonctionnement du modèle EOLES}
+Expliquer dans les grandes lignes et mettre résultats des simus
+
+Le modèle EOLES (Optimisation énergétique pour les systèmes à faibles émissions), développé par P. Quirion et ses collaborateurs, est un outil de modélisation du système électrique français. Il prend en compte différentes technologies de production (éoliennes en mer et à terre, énergie solaire photovoltaïque (PV), énergie lacustre, énergie au fil de l'eau et biogaz) et de stockage de l’électricité (stations de pompage-turbinage (STEP), batteries et méthanisation). Son objectif est d’identifier un mix énergétique permettant de satisfaire la demande horaire d’électricité en France en 2050, au moindre coût, tout en minimisant les coûts de production et de stockage sous contraintes. Le modèle repose sur une optimisation linéaire impliquant un nombre important de variables. La France y est représentée comme un noeud unique, sans distinction régionale, et seuls les territoires métropolitains sont considérés. Les échanges d’électricité avec l’étranger ne sont pas pris en compte, ce qui impose de satisfaire la demande à chaque heure. Les explications qui suivent s’appuient sur la première version du modèle EOLES.
+
+Le modèle EOLES minimise le cout définit selon plusieurs variables comme l'électricité générée par technologie et par heure, la capacité instalée par technologie, l'électricité entrante dans chaque méthode de stockage et par heure, l'électricité stockée par technologie de stockage et par heure, ect. Il existe deux types de variables : les variables annuelles et les variables horaires. Or, une année compte 8 759 heures. Par conséquent, l'optimisation porte sur plus de 7 milliards de variables.
+
+\begin{figure}[h!]
+	\centering
+    \includegraphics[width=1\linewidth]{Images/EOLES.png}
+    \caption{Exemples de résultats du modèle EOLES sur deux semaines types en 2006 (cf. \cite{EOLES}).}
+    \label{fig:EOLES}
+\end{figure}
+
+
+\begin{figure}[h!]
+	\centering
+    \includegraphics[width=1\linewidth]{Images/code_jouet1.png}
+    \caption{Production d'électricité sur une semaine type}
+    \label{fig:code_jouet1}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+    \includegraphics[width=1\linewidth]{Images/code_jouet2.png}
+    \caption{Déficit et quantité d'électricité stockée par technologie sur une année}
+    \label{fig:code_jouet2}
+\end{figure}
+
+
+Afin de pourvoir s'entrainer sur un problème plus léger, nous avons utiliser le fichier ENR_PL_classique. Ce code permet de maximiser la quantité d'électricité stoquée à chaque heure tout en minimisant les déficit à partir d'un mix énergétique fixé (alors que le modèle EOLES permet de trouver le meilleur mix en fonction du prix des technologe de production). Nous obtenons les resultats suivant : \ref{fig:code_jouet1} et \ref{fig:code_jouet2}.
+
+
+
+
+\newpage
+
+\section{Définition du problème}
+\newpage
+
+\section{Travail effectué sur la mise en place d'un algorythme permettant d'optimiser les flux à chaque pas de temps}
+\newpage
+
+%JUSQU'A LA -----------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+\bibliographystyle{abbrv}
+\bibliography{References/sample}
+
+\end{document}
