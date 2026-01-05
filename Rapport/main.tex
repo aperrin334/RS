@@ -22,7 +22,7 @@
     \LARGE{\textbf{Optimisation de la gestion d’un réseau électrique}}
 }
 
-\author{Aurore Davalan, Anaïs Noé-Achour, Alicia Perrin\\[0,5cm]{\small Tuteur : Aude Rondepierre et Charles Dossal}}
+\author{Aurore Davalan, Anaïs Noé-Achour, Alicia Perrin\\[0,5cm]{\small Tuteurs : Aude Rondepierre et Charles Dossal}}
 
 
 
@@ -53,7 +53,7 @@
 \section*{Introduction}
 Explication du cahier des charges (il faudra mieux rédiger):
 
-Ce projet avait pour but initial de découvrir et approfondir les notions de mix électrique et de scénario de consommation, le fonctionnement du mix électrique et les échanges à l’échelle européenne, le modèle EOLES et la programmation linéaire. Des recherches devaient être effectuées sur le fonctionnement des algoritmes d'optimisation sur des graphes orientés.
+Ce projet avait pour but initial de découvrir et approfondir les notions de mix électrique et de scénario de consommation, le fonctionnement du mix électrique et les échanges à l’échelle européenne, le modèle EOLES et la programmation linéaire. Des recherches devaient être effectuées sur le fonctionnement des algorithmes d'optimisation sur des graphes orientés.
 
 %JUSQU'A LA -----------------------------------------------------------------------------------------------------------------------------------
 
@@ -91,7 +91,7 @@ Expliquer dans les grandes lignes et mettre résultats des simus
 
 Le modèle EOLES (Optimisation énergétique pour les systèmes à faibles émissions), développé par P. Quirion et ses collaborateurs, est un outil de modélisation du système électrique français. Il prend en compte différentes technologies de production (éoliennes en mer et à terre, énergie solaire photovoltaïque (PV), énergie lacustre, énergie au fil de l'eau et biogaz) et de stockage de l’électricité (stations de pompage-turbinage (STEP), batteries et méthanisation). Son objectif est d’identifier un mix énergétique permettant de satisfaire la demande horaire d’électricité en France en 2050, au moindre coût, tout en minimisant les coûts de production et de stockage sous contraintes. Le modèle repose sur une optimisation linéaire impliquant un nombre important de variables. La France y est représentée comme un noeud unique, sans distinction régionale, et seuls les territoires métropolitains sont considérés. Les échanges d’électricité avec l’étranger ne sont pas pris en compte, ce qui impose de satisfaire la demande à chaque heure. Les explications qui suivent s’appuient sur la première version du modèle EOLES.
 
-Le modèle EOLES minimise le cout définit selon plusieurs variables comme l'électricité générée par technologie et par heure, la capacité instalée par technologie, l'électricité entrante dans chaque méthode de stockage et par heure, l'électricité stockée par technologie de stockage et par heure, ect. Il existe deux types de variables : les variables annuelles et les variables horaires. Or, une année compte 8 759 heures. Par conséquent, l'optimisation porte sur plus de 7 milliards de variables.
+Le modèle EOLES minimise le coût défini selon plusieurs variables comme l'électricité générée par technologie et par heure, la capacité installée par technologie, l'électricité entrante dans chaque méthode de stockage et par heure, l'électricité stockée par technologie de stockage et par heure, etc. Il existe deux types de variables : les variables annuelles et les variables horaires. Or, une année compte 8 759 heures. Par conséquent, l'optimisation porte sur plus de 7 milliards de variables.
 
 \begin{figure}[h!]
 	\centering
@@ -116,7 +116,7 @@ Le modèle EOLES minimise le cout définit selon plusieurs variables comme l'él
 \end{figure}
 
 
-Afin de pourvoir s'entrainer sur un problème plus léger, nous avons utiliser le fichier ENR_PL_classique. Ce code permet de maximiser la quantité d'électricité stoquée à chaque heure tout en minimisant les déficit à partir d'un mix énergétique fixé (alors que le modèle EOLES permet de trouver le meilleur mix en fonction du prix des technologe de production). Nous obtenons les resultats suivant : \ref{fig:code_jouet1} et \ref{fig:code_jouet2}.
+Afin de pourvoir s'entrainer sur un problème plus léger, nous avons utiliser le fichier ENR\_PL\_classique. Ce code permet de maximiser la quantité d'électricité stockée à chaque heure tout en minimisant les déficit à partir d'un mix énergétique fixé (alors que le modèle EOLES permet de trouver le meilleur mix en fonction du prix des technologe de production). Nous obtenons les resultats suivant : \ref{fig:code_jouet1} et \ref{fig:code_jouet2}.
 
 
 
@@ -126,7 +126,7 @@ Afin de pourvoir s'entrainer sur un problème plus léger, nous avons utiliser l
 \section{Définition du problème}
 \newpage
 
-\section{Travail effectué sur la mise en place d'un algorythme permettant d'optimiser les flux à chaque pas de temps}
+\section{Travail effectué sur la mise en place d'un algorithme permettant d'optimiser les flux à chaque pas de temps}
 \newpage
 
 %JUSQU'A LA -----------------------------------------------------------------------------------------------------------------------------------
