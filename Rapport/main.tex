@@ -55,6 +55,12 @@ Explication du cahier des charges (il faudra mieux rédiger):
 
 Ce projet avait pour but initial de découvrir et approfondir les notions de mix électrique et de scénario de consommation, le fonctionnement du mix électrique et les échanges à l’échelle européenne, le modèle EOLES et la programmation linéaire. Des recherches devaient être effectuées sur le fonctionnement des algorithmes d'optimisation sur des graphes orientés.
 
+\bf{Nouvelle proposition}
+Ce projet s’inscrit dans un ensemble de problématiques autour de l’optimisation de la gestion d’un réseau électrique. Nous nous placerons dans le cadre de projections de consommation à l’horizon 2050, données par l’ADEME, et nous appuierons sur des travaux existants pour la France métropolitaine tels que le modèle EOLES et le jeu Climix. L’objectif initial du projet était de proposer un algorithme optimisé de gestion de l’électricité à l’échelle européenne qui pourrait être utilisé dans les futures versions de ce jeu. Dans cette première phase (Reading Seminar/Semestre 1), nous nous sommes attachés à :
+- redécouvrir et approfondir les notions de mix électrique et de scénario de consommation ;
+- comprendre le modèle EOLES et l’algorithme du jeu Climix ;
+- effectuer des recherches sur le fonctionnement des algorithmes d'optimisation en programmation linéaire et sur des graphes orientés.
+
 %JUSQU'A LA -----------------------------------------------------------------------------------------------------------------------------------
 
 \newpage
@@ -86,7 +92,7 @@ Ce projet avait pour but initial de découvrir et approfondir les notions de mix
 
 %ECRIRE ICI ------------------------------------------------------------------------------------------------------------------------------------
 
-\section{Fonctionnement du modèle EOLES}
+\section{Présentation du modèle EOLES}
 Expliquer dans les grandes lignes et mettre résultats des simus
 
 Le modèle EOLES (Optimisation énergétique pour les systèmes à faibles émissions), développé par P. Quirion et ses collaborateurs, est un outil de modélisation du système électrique français. Il prend en compte différentes technologies de production (éoliennes en mer et à terre, énergie solaire photovoltaïque (PV), énergie lacustre, énergie au fil de l'eau et biogaz) et de stockage de l’électricité (stations de pompage-turbinage (STEP), batteries et méthanisation). Son objectif est d’identifier un mix énergétique permettant de satisfaire la demande horaire d’électricité en France en 2050, au moindre coût, tout en minimisant les coûts de production et de stockage sous contraintes. Le modèle repose sur une optimisation linéaire impliquant un nombre important de variables. La France y est représentée comme un noeud unique, sans distinction régionale, et seuls les territoires métropolitains sont considérés. Les échanges d’électricité avec l’étranger ne sont pas pris en compte, ce qui impose de satisfaire la demande à chaque heure. Les explications qui suivent s’appuient sur la première version du modèle EOLES.
@@ -116,7 +122,7 @@ Le modèle EOLES minimise le coût défini selon plusieurs variables comme l'él
 \end{figure}
 
 
-Afin de pourvoir s'entrainer sur un problème plus léger, nous avons utiliser le fichier ENR\_PL\_classique. Ce code permet de maximiser la quantité d'électricité stockée à chaque heure tout en minimisant les déficit à partir d'un mix énergétique fixé (alors que le modèle EOLES permet de trouver le meilleur mix en fonction du prix des technologe de production). Nous obtenons les resultats suivant : \ref{fig:code_jouet1} et \ref{fig:code_jouet2}.
+Afin de pouvoir s'entrainer sur un problème plus léger, nous avons utiliser le fichier ENR\_PL\_classique. Ce code permet de maximiser la quantité d'électricité stockée à chaque heure tout en minimisant les déficit à partir d'un mix énergétique fixé (alors que le modèle EOLES permet de trouver le meilleur mix en fonction du prix des technologies de production). Nous obtenons les résultats suivant : \ref{fig:code_jouet1} et \ref{fig:code_jouet2}.
 
 
 
@@ -127,6 +133,12 @@ Afin de pourvoir s'entrainer sur un problème plus léger, nous avons utiliser l
 \newpage
 
 \section{Travail effectué sur la mise en place d'un algorithme permettant d'optimiser les flux à chaque pas de temps}
+
+### Problème 1 : Optimisation indépendante sur chaque pays puis mise en place d’un système d’échange
+Dans ce premier modèle, on suppose qu’à une heure t, on à trouvé une solution au problème d’optimisation posé pour chaque pays (par exemple avec le code du jeu Climix, appliqué aux données de production et de consommation de chaque pays considéré). Ceci constitue la première étape qui parfois ne suffit pas à satisfaire la demande dans certains pays. On considère donc une deuxième étape dans laquelle on cherche à optimiser l’import-export d’électricité. Le but étant que les surplus d’électricité produits par certains pays à l’heure t soient exportés vers des pays en déficit à cette même heure t. Pour ce faire, nous avons développé l’algorithme appelé solve_flux( ) situé dans le fichierTest\_PlusieursPays.
+
+Problème 2 : Optimisation multi-pays
+
 \newpage
 
 %JUSQU'A LA -----------------------------------------------------------------------------------------------------------------------------------
