@@ -1,4 +1,5 @@
 \babel@toc {french}{}\relax 
-\contentsline {section}{\numberline {1}Fonctionnement du modèle EOLES}{1}{}%
-\contentsline {section}{\numberline {2}Définition du problème}{3}{}%
-\contentsline {section}{\numberline {3}Travail effectué sur la mise en place d'un algorythme permettant d'optimiser les flux à chaque pas de temps}{4}{}%
+\contentsline {section}{\numberline {1}Présentation du modèle EOLES}{1}{}%
+\contentsline {section}{\numberline {2}Code jouet}{2}{}%
+\contentsline {section}{\numberline {3}Echanges pays}{3}{}%
+\contentsline {section}{\numberline {4}Problème complet}{4}{}%

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.12.13)  17 DEC 2025 13:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.12.13)  7 JAN 2026 17:51
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -295,8 +295,7 @@ Package: fancyhdr 2025/02/07 v5.2 Extensive control of page headers and footers
 File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count308
 \l__pdf_internal_box=\box57
-)
-No file main.aux.
+) (main.aux)
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 35.
@@ -321,6 +320,7 @@ Package french.ldf Info: Setting StandardEnumerateEnv=true for
 (french.ldf)             compatibility with enumitem package,
 (french.ldf)             reported on input line 35.
 LaTeX Info: Redefining \up on input line 35.
+
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -395,146 +395,50 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {C:/Users/alipe/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
 
-[2]
-No file main.toc.
+[2] (main.toc)
 \tf@toc=\write3
 \openout3 = `main.toc'.
 
 
 
 [3]
-<Images/EOLES.png, id=18, 616.3025pt x 385.44pt>
+<Images/EOLES.png, id=19, 616.3025pt x 385.44pt>
 File: Images/EOLES.png Graphic file (type png)
 <use Images/EOLES.png>
-Package pdftex.def Info: Images/EOLES.png  used on input line 98.
+Package pdftex.def Info: Images/EOLES.png  used on input line 99.
 (pdftex.def)             Requested size: 435.32684pt x 272.26456pt.
 
 
-LaTeX Warning: Citation `EOLES' on page 1 undefined on input line 99.
+LaTeX Warning: Citation `EOLES' on page 1 undefined on input line 100.
 
 
-LaTeX Warning: Citation `EOLES' on page 1 undefined on input line 99.
+LaTeX Warning: Citation `EOLES' on page 1 undefined on input line 100.
 
-<Images/code_jouet1.png, id=20, 1594.95876pt x 792.9625pt>
+<Images/code_jouet1.png, id=21, 1594.95876pt x 792.9625pt>
 File: Images/code_jouet1.png Graphic file (type png)
 <use Images/code_jouet1.png>
-Package pdftex.def Info: Images/code_jouet1.png  used on input line 106.
+Package pdftex.def Info: Images/code_jouet1.png  used on input line 107.
 (pdftex.def)             Requested size: 435.32684pt x 216.42586pt.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<Images/code_jouet2.png, id=21, 1249.66875pt x 837.1275pt>
+<Images/code_jouet2.png, id=22, 1249.66875pt x 837.1275pt>
 File: Images/code_jouet2.png Graphic file (type png)
 <use Images/code_jouet2.png>
-Package pdftex.def Info: Images/code_jouet2.png  used on input line 113.
+Package pdftex.def Info: Images/code_jouet2.png  used on input line 114.
 (pdftex.def)             Requested size: 435.32684pt x 291.6067pt.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-c:/Users/alipe/Documents/4A/RS/Rapport/main.tex:119: Missing $ inserted.
-<inserted text> 
-                $
-l.119 ...©ger, nous avons utiliser le fichier ENR_
-                                                  PL_classique. Ce code perm...
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
 
-
-LaTeX Warning: Command \' invalid in math mode on input line 119.
-
-
-LaTeX Warning: Command \' invalid in math mode on input line 119.
-
-
-LaTeX Warning: Command \' invalid in math mode on input line 119.
-
-
-LaTeX Warning: Command \' invalid in math mode on input line 119.
-
-
-LaTeX Warning: Command \` invalid in math mode on input line 119.
-
-
-LaTeX Warning: Command \' invalid in math mode on input line 119.
-
-
-LaTeX Warning: Command \` invalid in math mode on input line 119.
-
-
-LaTeX Warning: Command \' invalid in math mode on input line 119.
-
-
-LaTeX Warning: Command \' invalid in math mode on input line 119.
-
-
-LaTeX Warning: Command \' invalid in math mode on input line 119.
-
-
-LaTeX Warning: Command \` invalid in math mode on input line 119.
-
-
-LaTeX Warning: Reference `fig:code_jouet1' on page 1 undefined on input line 119.
-
-
-LaTeX Warning: Reference `fig:code_jouet2' on page 1 undefined on input line 119.
-
-c:/Users/alipe/Documents/4A/RS/Rapport/main.tex:120: Missing $ inserted.
-<inserted text> 
-                $
-l.120 
-      
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-Missing character: There is no é in font cmr12!
-Missing character: There is no é in font cmr12!
-Missing character: There is no é in font cmr12!
-Missing character: There is no é in font cmr12!
-Missing character: There is no à in font cmr12!
-Missing character: There is no é in font cmr12!
-Missing character: There is no à in font cmr12!
-Missing character: There is no é in font cmr12!
-Missing character: There is no é in font cmr12!
-Missing character: There is no é in font cmr12!
-Missing character: There is no è in font cmr12!
-
-Overfull \hbox (999.91624pt too wide) in paragraph at lines 119--120
-\T1/cmr/m/n/12 ENR$[]\OML/cmm/m/it/12 L[]lassique:Cecodepermetdemaximiserlaquantitd[]lectricitstoquechaqueheuretoutenminimisantlesdficitpartird[]unmixnergtiquefix\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 alorsquelemodleEOLESpermetdetrouverlemeilleurmixenfonctionduprixdestechnologedeproduction\OT1/cmr/m/n/12 )\OML/cmm/m/it/12 :Nousobtenonslesresultatssuivant \OT1/cmr/m/n/12 :
- []
-
-
-
-
-LaTeX Warning: Reference `LastPage' on page 1 undefined on input line 124.
 
 [1 <./Images/EOLES.png>]
 
-
-LaTeX Warning: Reference `LastPage' on page 2 undefined on input line 124.
-
 [2 <./Images/code_jouet1.png> <./Images/code_jouet2.png>]
-
-
-LaTeX Warning: Reference `LastPage' on page 3 undefined on input line 127.
 
 [3]
 
-
-Package fancyhdr Warning: \headheight is too small (20.0pt): 
-(fancyhdr)                Make it at least 27.11469pt, for example:
-(fancyhdr)                \setlength{\headheight}{27.11469pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-7.11469pt}.
-
-
-LaTeX Warning: Reference `LastPage' on page 4 undefined on input line 130.
-
-[4] (main.bbl)
-
-
-LaTeX Warning: Reference `LastPage' on page 5 undefined on input line 140.
-
-[5] 
+[4] 
 enddocument/afterlastpage (AED): lastpage setting LastPage.
 (main.aux)
  ***********
@@ -545,25 +449,19 @@ L3 programming layer <2024-11-02>
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package lastpage Warning: Rerun to get the references right on input line 140.
-
  ) 
 Here is how much of TeX's memory you used:
- 7629 strings out of 473682
- 126831 string characters out of 5719215
- 545732 words of memory out of 5000000
- 30589 multiletter control sequences out of 15000+600000
- 576068 words of font info for 79 fonts, out of 8000000 for 9000
+ 7620 strings out of 473682
+ 126756 string characters out of 5719215
+ 554812 words of memory out of 5000000
+ 30581 multiletter control sequences out of 15000+600000
+ 574511 words of font info for 77 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 71i,11n,79p,1246b,428s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\eccc1200.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsl1200.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1095.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2074.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm2074.pk><C:/Users/alipe/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/alipe/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/alipe/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/alipe/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on main.pdf (8 pages, 1028340 bytes).
+ 71i,12n,79p,1246b,428s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\eccc1200.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsl1200.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1095.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2074.pk> <C:\Users\alipe\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm2074.pk><C:/Users/alipe/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/alipe/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/alipe/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/alipe/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/alipe/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/alipe/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on main.pdf (7 pages, 1060342 bytes).
 PDF statistics:
- 308 PDF objects out of 1000 (max. 8388607)
+ 334 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  16 words of extra memory for PDF output out of 10000 (max. 10000000)
 
