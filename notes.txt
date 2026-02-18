@@ -1,0 +1,9 @@
+A FAIRE RAPPORT :
+    - Changer l'equations de la demande pb complet ---> >=-déficit
+ALGO :
+    - Refaire les graphes et vérifier le code
+    - Faire sur d'autres données
+    - Tester l'efficacité du 2eme code 
+EN PLUS :
+    - Trouver comment comparer les fonctions couts (les solutions seront forcement differentes parce qu'il y a une infinité de solutions du meme couts)
+    - calculer les pertes (le surplus pas stocké)
