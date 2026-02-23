@@ -1,9 +1,22 @@
-A FAIRE RAPPORT :
-    - Changer l'equations de la demande pb complet ---> >=-déficit
+------------------------------------------------------------------------------------
+24/02/2026
+------------------------------------------------------------------------------------
+
+A FAIRE : --------------------------------------------------------------------------
+
 ALGO :
-    - Refaire les graphes et vérifier le code
-    - Faire sur d'autres données
+    (- Faire sur d'autres données)
     - Tester l'efficacité du 2eme code 
 EN PLUS :
     - Trouver comment comparer les fonctions couts (les solutions seront forcement differentes parce qu'il y a une infinité de solutions du meme couts)
     - calculer les pertes (le surplus pas stocké)
+
+
+FAIT Ali : -----------------------------------------------------------------------------
+
+RAPPORT :
+    - Changer l'equations de la demande pb complet ---> >=-déficit
+    - Mettre "sigma" a  la place des 10^4 pour les pénalisation des fonctions couts
+
+ALGO :
+    - Refaire les graphes et vérifier le code
