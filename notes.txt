@@ -1,7 +1,3 @@
-------------------------------------------------------------------------------------
-24/02/2026
-------------------------------------------------------------------------------------
-
 A FAIRE : --------------------------------------------------------------------------
 
 ALGO :
@@ -10,10 +6,15 @@ ALGO :
 EN PLUS :
     - Trouver comment comparer les fonctions couts (les solutions seront forcement differentes parce qu'il y a une infinité de solutions du meme couts)
     - calculer les pertes (le surplus pas stocké)
-    - pénaliser échanges dans la fonction coût (pour éviter échanges inutiles)
+    + pénaliser échanges dans la fonction coût (pour éviter échanges inutiles)
     - vérifier capacités de stockage (semblent faibles) ==> augmenter capacités ou rajouter lacs (nouveau type de stockage)
-    - rallonger pas horaire (influence temps de calcul)
-    - augmenter nb pays, nb de technologies (ex : lac ou pas renouvelable)
+    - faire algo euristique (d'abord faire une optimisation sur chaque pays puis optimisation sur les échanges)
+
+
+ÉTUDES DU TEMPS DE CALCULS :
+    - rallonger période étudiée (passer à 1 an) ==> prendre différentes données pour chaque pays
+    - augmenter nb pays et/ou nb de technologies/stockage (ex : lac (taux de remplissage mensuel) ou NRJ pas renouvelable)
+    
 
 
 FAIT Ali : -----------------------------------------------------------------------------
@@ -24,3 +25,10 @@ RAPPORT :
 
 ALGO :
     - Refaire les graphes et vérifier le code
+
+
+NOTES : -----------------------------------------------------------------------------
+
+   - d'abord faire une optimisation sur chaque pays puis optimisation sur les échanges
+
+
