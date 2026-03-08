@@ -2,33 +2,29 @@ A FAIRE : ----------------------------------------------------------------------
 
 ALGO :
     (- Faire sur d'autres données)
-    - Tester l'efficacité du 2eme code 
-EN PLUS :
-    - Trouver comment comparer les fonctions couts (les solutions seront forcement differentes parce qu'il y a une infinité de solutions du meme couts)
-    - calculer les pertes (le surplus pas stocké)
-    + pénaliser échanges dans la fonction coût (pour éviter échanges inutiles)
-    - vérifier capacités de stockage (semblent faibles) ==> augmenter capacités ou rajouter lacs (nouveau type de stockage)
-    - faire algo euristique (d'abord faire une optimisation sur chaque pays puis optimisation sur les échanges)
-
-
+    - Rallonger période étudiée (passer à 1 an) ==> prendre différentes données pour chaque pays
+    - Augmenter nb pays et/ou nb de technologies/stockage (ex : lac (taux de remplissage mensuel) ou NRJ pas renouvelable)
+    - Tester l'efficacité du 2eme code
 ÉTUDES DU TEMPS DE CALCULS :
-    - rallonger période étudiée (passer à 1 an) ==> prendre différentes données pour chaque pays
-    - augmenter nb pays et/ou nb de technologies/stockage (ex : lac (taux de remplissage mensuel) ou NRJ pas renouvelable)
-    
+    - Trouver comment comparer les fonctions couts (les solutions seront forcement differentes parce qu'il y a une infinité de solutions du meme couts)
 
 
-FAIT Ali : -----------------------------------------------------------------------------
 
-RAPPORT :
-    - Changer l'equations de la demande pb complet ---> >=-déficit
-    - Mettre "sigma" a  la place des 10^4 pour les pénalisation des fonctions couts
+FAIT : -----------------------------------------------------------------------------
 
 ALGO :
-    - Refaire les graphes et vérifier le code
+    - pénaliser échanges dans la fonction coût (pour éviter échanges inutiles)
+    - calculer les pertes (le surplus pas stocké)
+    - vérifier capacités de stockage (semblent faibles) ==> MUTIPLICATION DES CAPACITES ET PUISSANCES (Bien ??)
+    - Faire algo euristique (d'abord faire une optimisation sur chaque pays puis optimisation sur les échanges)
+    - Parralléliser les optimisations individuelles
 
 
-NOTES : -----------------------------------------------------------------------------
 
-   - d'abord faire une optimisation sur chaque pays puis optimisation sur les échanges
+NOTE : -----------------------------------------------------------------------------
 
-
+Il y a énormément de déficit sur l'algo euristique. Il faut surement changer l'algo en mettant par exemple en échange tout ce qu'il y a en stockage aussi.
+Pour la parallélisation il faut installer joblib avec les commandes :
+    > conda activate nom_environnement
+    > conda install joblib
+dans un terminal anconda.
