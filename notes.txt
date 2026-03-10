@@ -16,7 +16,6 @@ DEBBUG :
 ---- note du 24/02 ---
 ALGO :
     (- Faire sur d'autres données)
-    - Rallonger période étudiée (passer à 1 an) ==> prendre différentes données pour chaque pays
     - Augmenter nb pays et/ou nb de technologies/stockage (ex : lac (taux de remplissage mensuel) ou NRJ pas renouvelable)
     - Tester l'efficacité du 2eme code
 ÉTUDES DU TEMPS DE CALCULS :
@@ -32,6 +31,7 @@ ALGO :
     - vérifier capacités de stockage (semblent faibles) ==> MUTIPLICATION DES CAPACITES ET PUISSANCES (Bien ??)
     - Faire algo euristique (d'abord faire une optimisation sur chaque pays puis optimisation sur les échanges)
     - Parralléliser les optimisations individuelles
+    - Rallonger période étudiée (passer à 1 an) ==> prendre différentes données pour chaque pays
 
 
 
