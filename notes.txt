@@ -1,5 +1,19 @@
 A FAIRE : --------------------------------------------------------------------------
 
+--- note du 10/03 ---
+MODELISATION :
+Reprendre l'algo du pb complet à n pays en définissant les règles d'échange et réorganisant les étapes :
+    1. ECHANGES POUR EVITER LE DEFICIT : On envoit le surplus vers les pays en déficit
+    2. ECHANGES POUR EVITER DE GACHER DE L'ELECTRICITE : on regarde la capacité C de stockage totale(PHS + PTG) d'un pays, si le surplus est > C on envoit la partie qui ne pourra pas être stockée vers d'autres pays qui peuvent stocker
+    3. STRATEGIE DE STOCKAGE INDIVIDUELLE : chaque pays fait son optimisation
+    -> Dans ce modèle on ne regarde pas si un pays qui va stocker du gaz (= pire méthode en coût, rendement, emissions de CO2) à l'étape 3 aurait pu trouver une meilleure façon d'utiliser ou stocker l'énergie grâce aux échanges
+DEBBUG :
+    - A un instant t, regarder toutes les variables, puis regarder ce que ça donne dans les inégalités (contraintes) définies dans le pb
+    - Regarder notamment a des moments clés où on sait un peu ce qui devrait se passer (ex : on devrait avoir du surplus en été)
+    - Afficher les courbes standard à ces moment là (les courbes remplies, de couleur, qui supperposent tout)
+
+
+---- note du 24/02 ---
 ALGO :
     (- Faire sur d'autres données)
     - Rallonger période étudiée (passer à 1 an) ==> prendre différentes données pour chaque pays
