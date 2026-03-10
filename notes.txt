@@ -3,8 +3,8 @@ A FAIRE : ----------------------------------------------------------------------
 --- note du 10/03 ---
 MODELISATION :
 Reprendre l'algo du pb complet à n pays en définissant les règles d'échange et réorganisant les étapes :
-    1. ECHANGES POUR EVITER LE DEFICIT : On envoit le surplus vers les pays en déficit
-    2. ECHANGES POUR EVITER DE GACHER DE L'ELECTRICITE : on regarde la capacité C de stockage totale(PHS + PTG) d'un pays, si le surplus est > C on envoit la partie qui ne pourra pas être stockée vers d'autres pays qui peuvent stocker
+    1. ECHANGES POUR EVITER LE DEFICIT : On envoie le surplus vers les pays en déficit
+    2. ECHANGES POUR EVITER DE GACHER DE L'ELECTRICITE : on regarde la capacité C de stockage totale(PHS + PTG) d'un pays, si le surplus est > C on envoie la partie qui ne pourra pas être stockée vers d'autres pays qui peuvent stocker
     3. STRATEGIE DE STOCKAGE INDIVIDUELLE : chaque pays fait son optimisation
     -> Dans ce modèle on ne regarde pas si un pays qui va stocker du gaz (= pire méthode en coût, rendement, emissions de CO2) à l'étape 3 aurait pu trouver une meilleure façon d'utiliser ou stocker l'énergie grâce aux échanges
 DEBBUG :
@@ -37,6 +37,16 @@ ALGO :
 
 NOTE : -----------------------------------------------------------------------------
 
+--- note du 10/03 ---
+* On cherche des règles d'échange raisonnables
+* Choix des paramètres du modèle : c'est mieux de se mettre dans un cadre favorable (éventuellement un peu moins réaliste) pour commencer
+* Si j'ai bien compris, on peut grossièrement distinguer 3 (ici) types d'électricité qu'on peut donner :
+    1. L'élec qu'on aurait perdue dans tous les cas (on n'en a pas besoin ET on ne peut pas stocker)
+    2. L'élec qu'on pourrait stocker mais "mal" (ex : gaz = stockage long terme avec un mauvais rendement et des émissions de CO2)
+    3. L'élec qu'on voudrait bien stocker (ex : pour recharger les barrages) 
+
+
+--- note du 24/02 ---
 Il y a énormément de déficit sur l'algo euristique. Il faut surement changer l'algo en mettant par exemple en échange tout ce qu'il y a en stockage aussi.
 Pour la parallélisation il faut installer joblib avec les commandes :
     > conda activate nom_environnement
