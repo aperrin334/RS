@@ -1,3 +1,9 @@
+INFO : -----------------------------------------------------------------------------
+
+J'ai fait un fichier séparéV2 qui fait d'abord les échanges et après le stock (sans prendre en compte la "jauge" comme il nous avait dit)
+
+Le code fonctionne mais les résultat ne sont toujours pas satisfaisant. Il faudra faire une V3 avec la jauge du coup.
+
 A FAIRE : --------------------------------------------------------------------------
 
 --- note du 10/03 ---
