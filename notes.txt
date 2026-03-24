@@ -6,6 +6,12 @@ Le code fonctionne mais les résultat ne sont toujours pas satisfaisant. Il faud
 
 A FAIRE : --------------------------------------------------------------------------
 
+--- note du 24/03 ---
+Algo :
+    - Il existe des demandes pour les pays voisins (sur teams)
+    - Ajouter les surplus sur le graphe coloré
+
+
 --- note du 10/03 ---
 MODELISATION :
 Reprendre l'algo du pb complet à n pays en définissant les règles d'échange et réorganisant les étapes :
