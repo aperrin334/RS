@@ -1,8 +1,33 @@
+INFO : -----------------------------------------------------------------------------
+
+J'ai fait un fichier séparéV2 qui fait d'abord les échanges et après le stock (sans prendre en compte la "jauge" comme il nous avait dit)
+
+Le code fonctionne mais les résultat ne sont toujours pas satisfaisant. Il faudra faire une V3 avec la jauge du coup.
+
 A FAIRE : --------------------------------------------------------------------------
 
+--- note du 24/03 ---
+Algo :
+    - Il existe des demandes pour les pays voisins (sur teams)
+    - Ajouter les surplus sur le graphe coloré
+
+
+--- note du 10/03 ---
+MODELISATION :
+Reprendre l'algo du pb complet à n pays en définissant les règles d'échange et réorganisant les étapes :
+    1. ECHANGES POUR EVITER LE DEFICIT : On envoie le surplus vers les pays en déficit
+    2. ECHANGES POUR EVITER DE GACHER DE L'ELECTRICITE : on regarde la capacité C de stockage totale(PHS + PTG) d'un pays, si le surplus est > C on envoie la partie qui ne pourra pas être stockée vers d'autres pays qui peuvent stocker
+    3. STRATEGIE DE STOCKAGE INDIVIDUELLE : chaque pays fait son optimisation
+    -> Dans ce modèle on ne regarde pas si un pays qui va stocker du gaz (= pire méthode en coût, rendement, emissions de CO2) à l'étape 3 aurait pu trouver une meilleure façon d'utiliser ou stocker l'énergie grâce aux échanges
+DEBBUG :
+    - A un instant t, regarder toutes les variables, puis regarder ce que ça donne dans les inégalités (contraintes) définies dans le pb
+    - Regarder notamment a des moments clés où on sait un peu ce qui devrait se passer (ex : on devrait avoir du surplus en été)
+    - Afficher les courbes standard à ces moment là (les courbes remplies, de couleur, qui supperposent tout)
+
+
+---- note du 24/02 ---
 ALGO :
     (- Faire sur d'autres données)
-    - Rallonger période étudiée (passer à 1 an) ==> prendre différentes données pour chaque pays
     - Augmenter nb pays et/ou nb de technologies/stockage (ex : lac (taux de remplissage mensuel) ou NRJ pas renouvelable)
     - Tester l'efficacité du 2eme code
 ÉTUDES DU TEMPS DE CALCULS :
@@ -18,11 +43,22 @@ ALGO :
     - vérifier capacités de stockage (semblent faibles) ==> MUTIPLICATION DES CAPACITES ET PUISSANCES (Bien ??)
     - Faire algo euristique (d'abord faire une optimisation sur chaque pays puis optimisation sur les échanges)
     - Parralléliser les optimisations individuelles
+    - Rallonger période étudiée (passer à 1 an) ==> prendre différentes données pour chaque pays
 
 
 
 NOTE : -----------------------------------------------------------------------------
 
+--- note du 10/03 ---
+* On cherche des règles d'échange raisonnables
+* Choix des paramètres du modèle : c'est mieux de se mettre dans un cadre favorable (éventuellement un peu moins réaliste) pour commencer
+* Si j'ai bien compris, on peut grossièrement distinguer 3 (ici) types d'électricité qu'on peut donner :
+    1. L'élec qu'on aurait perdue dans tous les cas (on n'en a pas besoin ET on ne peut pas stocker)
+    2. L'élec qu'on pourrait stocker mais "mal" (ex : gaz = stockage long terme avec un mauvais rendement et des émissions de CO2)
+    3. L'élec qu'on voudrait bien stocker (ex : pour recharger les barrages) 
+
+
+--- note du 24/02 ---
 Il y a énormément de déficit sur l'algo euristique. Il faut surement changer l'algo en mettant par exemple en échange tout ce qu'il y a en stockage aussi.
 Pour la parallélisation il faut installer joblib avec les commandes :
     > conda activate nom_environnement
