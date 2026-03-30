@@ -10,6 +10,8 @@ A FAIRE : ----------------------------------------------------------------------
 Algo :
     - Il existe des demandes pour les pays voisins (sur teams)
     - Ajouter les surplus sur le graphe coloré
+    - D'ABORD comprendre et expliquer les incohérences sur les graphes (ex : surplus sans stockage ni import -> est-ce que c'est parce que le stockage est au max ? est-ce que tout le monde est déjà à 0 en termes de déficit ? ; pics de charge PtG pour le pays 4 : pourquoi il n'y a pas eu d'exports ? -> mettre des graphes qui permettent de voir pour expliquer)
+    - ENSUITE rajouter la possibilité de destocker pour palier les deficits des autres (-> ce qui fait qu'un pays va être en déficit c'est soit que ses imports de toute part atteignent les capacités max, soit que les autres pays n'ont plus rien, même à destocker (ou même en centrales à charbon etc))
 
 
 --- note du 10/03 ---
