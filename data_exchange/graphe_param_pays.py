@@ -1,12 +1,12 @@
 # visualisation de la matrice des capacité max d'échanges
-# code généré par IA qui produit un fichier image dans le dossier
+# code généré par IA qui produit un fichier image
 
 import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
 
 # Charger les données
-df = pd.read_csv('./links.csv', header=None, names=['Source', 'Destination', 'Poids'])
+df = pd.read_csv('data_exchange/links.csv', header=None, names=['Source', 'Destination', 'Poids'])
 
 # Créer un graphe orienté
 G = nx.DiGraph()
@@ -47,7 +47,7 @@ nx.draw_networkx_edge_labels(G, pos, edge_labels, font_size=9)
 plt.title("Graphe orienté des relations entre pays", fontsize=16, fontweight='bold')
 plt.axis('off')
 plt.tight_layout()
-plt.savefig('./graphe_pays.png', dpi=300, bbox_inches='tight')
+plt.savefig('data_exchange/graphe_pays.png', dpi=300, bbox_inches='tight')
 print("Graphe sauvegardé dans graphe_pays.png")
 
 # Afficher quelques statistiques

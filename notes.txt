@@ -6,6 +6,19 @@ Le code fonctionne mais les résultat ne sont toujours pas satisfaisant. Il faud
 
 A FAIRE : --------------------------------------------------------------------------
 
+
+--- note du 07/04 ---
+
+-> aux instants t en été, là où il y a du déficit, regarder la cohérence des autres graphes (surplus…)
+
+-> écrire les modèles pour le rapport
+
+-> comprendre les incohérences sur les imports exports (ils atteignent des valeurs max qui sont des valeurs tres basses par rapport eu modèle complet)
+
+-> faire des fichiers .py pour les fonctions d'optim et les parametres ou fichier de config
+
+
+
 --- note du 24/03 ---
 Algo :
     - Il existe des demandes pour les pays voisins (sur teams)
