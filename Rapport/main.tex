@@ -13,202 +13,205 @@
 \usepackage{setspace}
 \usepackage[T1]{fontenc}
 \usepackage{pdfpages}
+\usepackage{tcolorbox} % à mettre dans le préambule
+\tcbuselibrary{breakable} % pour permettre que la boîte se casse sur plusieurs pages si nécessaire
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{stmaryrd}
+\usepackage[T1]{fontenc}    % Pour la gestion des accents dans le PDF
+\usepackage[utf8]{inputenc}  % Pour lire les caractères spéciaux du fichier .tex
+\usepackage[french]{babel}   % Pour les règles de typographie française
 
-
-
-\title{
-    \vspace{1.5cm} Rapport de projet Reading Seminar \\ 
-    \vspace{0.25cm}
-    \LARGE{\textbf{Optimisation de la gestion d’un réseau électrique}}
-}
-
-\author{Aurore Davalan, Anaïs Noé-Achour, Alicia Perrin\\[0,5cm]{\small Tuteurs : Aude Rondepierre et Charles Dossal}}
-
-
-
-% Configuration de l'en-tête et du pied de page
-\RequirePackage{fancyhdr}
-\pagestyle{fancy}
-\fancyfoot[C]{\today}
-\fancyfoot[R]{}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
 
 \begin{document}
 
-\setlength{\headheight}{20pt}
+\section{Données}
 
-% Configuration du pied de page
-\fancyfoot[C]{\today}
-\fancyfoot[R]{}
-\singlespacing{}
+Les données d'entrée et les variables du problèmes sont résumées dans la table qui suit :
 
-\maketitle
-\vspace{0.5cm}
-\hrule
-\vspace{1cm}
-
-\newpage
-
-%ECRIRE ICI ------------------------------------------------------------------------------------------------------------------------------------
-
-\section*{Introduction}
-
-Ce projet s’inscrit dans un ensemble de problématiques autour de l’optimisation de la gestion d’un réseau électrique. Nous nous placerons dans le cadre de projections de consommation à l’horizon 2050, données par l’ADEME, et nous appuierons sur des travaux existants pour la France métropolitaine tels que le modèle EOLES et le jeu Climix. L’objectif initial du projet était de proposer un algorithme optimisé de gestion de l’électricité à l’échelle européenne qui pourrait être utilisé dans les futures versions de ce jeu. Dans cette première phase (Reading Seminar/Semestre 1), nous nous sommes attachés à :
-- redécouvrir et approfondir les notions de mix électrique et de scénario de consommation ;
-- comprendre le modèle EOLES et l’algorithme du jeu Climix ;
-- effectuer des recherches sur le fonctionnement des algorithmes d'optimisation en programmation linéaire et sur des graphes orientés.
-
-%JUSQU'A LA -----------------------------------------------------------------------------------------------------------------------------------
-
-\newpage
-
-
-% Nouvelle page pour la table des matières
-\newpage
-\pagestyle{fancy}
-
-% Configuration du pied de page
-\fancyfoot[C]{\today}
-\fancyfoot[R]{}
-\singlespacing{}
-\tableofcontents
-
-% Réinitialiser la numérotation des pages
-\newpage
-\pagenumbering{arabic}
-\pagestyle{fancy}
-
-% Configuration du pied de page
-\fancyfoot[C]{\today}
-\fancyfoot[R]{\thepage\ / \pageref{LastPage}}
-% Nettoyage de l'en-tête
-\fancyhead{}
-\fancyhead[L]{\nouppercase{\leftmark}} % affiche seulement la section
-\fancyhead[R]{}
+\begin{table}[H]
+\centering
+\caption{Données et variables du problème complet}
+\vspace{0.2 cm}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Données (paramètres connus)} & \textbf{Description} \\ 
+\midrule
+$n$ & Nombre de pays \\
+\addlinespace
+$T$ & Nombre de pas de temps \\
+\addlinespace
+$\sigma$ & Pénalisation des pénuries \\
+\addlinespace
+$flux\_eff$ & Efficacité des flux entre les pays \\
+\addlinespace
+$\mathrm{phs\_capacity}_i$ & Capacité de stockage PHS du pays $i$ \\
+\addlinespace
+$\mathrm{ptg\_capacity}_i$ & Capacité de stockage PTG du pays $i$ \\
+\addlinespace
+$\mathrm{phs\_power}_i$ & Puissance maximale de charge/décharge PHS du pays $i$ \\
+\addlinespace
+$\mathrm{ptg\_power\_in}_i, \mathrm{ptg\_power\_out}_i$ & Puissance maximale d'entrée/sortie PTG du pays $i$ \\
+\addlinespace
+$\mathrm{phs\_efficiency}_i, \mathrm{ptg\_efficiency}_i$ & Efficacité de conversion PHS/PTG du pays $i$ \\
+\addlinespace
+$\mathrm{prod}_i[t]$ & Production disponible au pays $i$ à l'heure $t$ \\
+\addlinespace
+$\mathrm{demand}_i[t]$ & Demande d'énergie au pays $i$ à l'heure $t$ \\
+\addlinespace
+$q_{ij}^{\max}$ & Capacité maximale d'échange d'énergie du pays $i$ vers $j$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 
-%ECRIRE ICI ------------------------------------------------------------------------------------------------------------------------------------
-
-\section{Présentation du modèle EOLES}
-
-Le modèle EOLES (Optimisation énergétique pour les systèmes à faibles émissions), développé par P. Quirion et ses collaborateurs, est un outil de modélisation du système électrique français. Il prend en compte différentes technologies de production (éoliennes en mer et à terre, énergie solaire photovoltaïque (PV), énergie lacustre, énergie au fil de l'eau et biogaz) et de stockage de l’électricité (stations de pompage-turbinage (STEP), batteries et méthanisation). Son objectif est d’identifier un mix énergétique permettant de satisfaire la demande horaire d’électricité en France en 2050, au moindre coût, tout en minimisant les coûts de production et de stockage sous contraintes. Le modèle repose sur une optimisation linéaire impliquant un nombre important de variables. La France y est représentée comme un noeud unique, sans distinction régionale, et seuls les territoires métropolitains sont considérés. Les échanges d’électricité avec l’étranger ne sont pas pris en compte, ce qui impose de satisfaire la demande à chaque heure. Les explications qui suivent s’appuient sur la première version du modèle EOLES.
-
-Le modèle EOLES minimise le coût défini selon plusieurs variables comme l'électricité générée par technologie et par heure, la capacité installée par technologie, l'électricité entrante dans chaque méthode de stockage et par heure, l'électricité stockée par technologie de stockage et par heure, etc. Il existe deux types de variables : les variables annuelles et les variables horaires. Or, une année compte 8 759 heures. Par conséquent, l'optimisation porte sur plus de 7 milliards de variables.
-
-\begin{figure}[h!]
-	\centering
-    \includegraphics[width=1\linewidth]{Images/EOLES.png}
-    \caption{Exemples de résultats du modèle EOLES sur deux semaines types en 2006 (cf. \cite{EOLES}).}
-    \label{fig:EOLES}
-\end{figure}
-
-
-\begin{figure}[h!]
-	\centering
-    \includegraphics[width=1\linewidth]{Images/code_jouet1.png}
-    \caption{Production d'électricité sur une semaine type}
-    \label{fig:code_jouet1}
-\end{figure}
-
-\begin{figure}[h!]
-	\centering
-    \includegraphics[width=1\linewidth]{Images/code_jouet2.png}
-    \caption{Déficit et quantité d'électricité stockée par technologie sur une année}
-    \label{fig:code_jouet2}
-\end{figure}
-
-
-\section{Code jouet}
-Afin de pouvoir s'entrainer sur un problème plus léger, nous avons utiliser le fichier ENR\_PL\_classique. Ce code permet de maximiser la quantité d'électricité stockée à chaque heure tout en minimisant les déficit à partir d'un mix énergétique fixé (alors que le modèle EOLES permet de trouver le meilleur mix en fonction du prix des technologies de production). Nous obtenons les résultats suivant : \ref{fig:code_jouet1} et \ref{fig:code_jouet2}.
-
-
-
+\begin{table}[H]
+\centering
+\vspace{0.2 cm}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Variables à optimiser} & \textbf{Description} \\
+\midrule
+$\mathrm{phs\_level}_i[t]$ & Niveau de stockage PHS du pays $i$ à l'heure $t$ \\
+\addlinespace
+$\mathrm{ptg\_level}_i[t]$ & Niveau de stockage PTG du pays $i$ à l'heure $t$ \\
+\addlinespace
+$\mathrm{phs\_in}_i[t], \mathrm{phs\_out}_i[t]$ & Puissance de charge/décharge PHS du pays $i$ à l'heure $t$ \\
+\addlinespace
+$\mathrm{ptg\_in}_i[t], \mathrm{ptg\_out}_i[t]$ & Puissance de charge/décharge PTG du pays $i$ à l'heure $t$ \\
+\addlinespace
+$\mathrm{deficit}_i[t]$ & Déficit d'électricité au pays $i$ à l'heure $t$ \\
+\addlinespace
+$\mathrm{surplus}_i[t]$ & Surplus d'électricité au pays $i$ à l'heure $t$ (électricité perdue) \\
+\addlinespace
+$q_{ij}[t]$ & Electricité échangée du pays $i$ vers $j$ à l'heure $t$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \newpage
+\section{Problème complet à n pays}
 
-\section{Echanges pays}
-
-Dans ce premier modèle, on suppose qu’à une heure $t$, on à trouvé une solution au problème d’optimisation posé pour chaque pays (par exemple avec le code du jeu Climix, appliqué aux données de production et de consommation de chaque pays considéré). Ceci constitue la première étape qui parfois ne suffit pas à satisfaire la demande dans certains pays. On considère donc une deuxième étape dans laquelle on cherche à optimiser l’import-export d’électricité. Le but étant que les surplus d’électricité produits par certains pays à l’heure t soient exportés vers des pays en déficit à cette même heure t. Pour ce faire, nous avons développé l’algorithme appelé $\text{solve\_flux}()$ situé dans le $\text{fichierTest\_PlusieursPays}$.
-
-\newpage
-
-\section{Problème complet}
-
-La fonction qu'on cherche à minimiser est :
-
-\begin{align}
+\begin{tcolorbox}[colback=violet!5!white, colframe=blue!75!black, breakable]
+\begin{align*}
 \min \quad 
-& \sum_{i=1}^n \big( - \mathrm{ptg\_level}_i(T) \big)
-+ 10^4 \sum_{i=1}^n \sum_{t=1}^T \mathrm{deficit}_i(t),
-\end{align}
+& \sum_{i=1}^n - \mathrm{ptg\_level}_i[T-1]
++ \sigma \cdot \mathrm{deficit}_i(t),
+\end{align*}
 
-avec les conditions initiales :
-
-\begin{align}
-\mathrm{phs\_level}_i(0) &= \mathrm{phs\_capacity}_i
-&& \forall i \in \{1,\dots,n\}, \\
-\mathrm{ptg\_level}_i(0) &= \mathrm{ptg\_capacity}_i
-&& \forall i \in \{1,\dots,n\},
-\end{align}
-
-et sous les contraintes :
+sous les contraintes, $\forall i \in \{1,\dots,n\}$ :
 
 \begin{align}
-\mathrm{prod}_i(t) - \mathrm{demand}_i(t)
-&+ \mathrm{phs\_out}_i(t)\,\eta_{\mathrm{phs}}
-+ \mathrm{ptg\_out}_i(t)\,\eta_{\mathrm{ptg}} \\
-&- \mathrm{phs\_in}_i(t)
-- \mathrm{ptg\_in}_i(t)
-- \sum_{j=1}^n q_{ij}(t)
-+ \sum_{j=1}^n q_{ji}(t)
-= \mathrm{deficit}_i(t),
-\end{align}
-
-\begin{align}
-\mathrm{phs\_in}_i(t) &\le \mathrm{phs\_power}_i, \\
-\mathrm{phs\_out}_i(t) &\le \mathrm{phs\_power}_i, \\
-\mathrm{ptg\_in}_i(t) &\le \mathrm{ptg\_power\_in}_i, \\
-\mathrm{ptg\_out}_i(t) &\le \mathrm{ptg\_power\_out}_i,
-\end{align}
-
-\begin{align}
-\mathrm{phs\_level}_i(t) &\le \mathrm{phs\_capacity}_i, \\
-\mathrm{ptg\_level}_i(t) &\le \mathrm{ptg\_capacity}_i,
-\end{align}
-
-
-\begin{align}
-\mathrm{phs\_level}_i(t)
-&= \mathrm{phs\_level}_i(t-1)
-+ \eta_{\mathrm{phs}}\,\mathrm{phs\_in}_i(t)
-- \mathrm{phs\_out}_i(t), \\
-\mathrm{ptg\_level}_i(t)
-&= \mathrm{ptg\_level}_i(t-1)
-+ \eta_{\mathrm{ptg}}\,\mathrm{ptg\_in}_i(t)
-- \mathrm{ptg\_out}_i(t),
-\end{align}
-
-
-\begin{align}
-\mathrm{deficit}_i(t) &\ge 0,
-\end{align}
-
-\begin{align}
-q_{ij}(t) &\le q^{\max}_{ij}
-\qquad \forall i,j \in \{1,\dots,n\}.
-\end{align}
-
-
-
+\mathrm{phs\_level}_i[0] &=\mathrm{phs\_capacity}_i/2,\\
+\mathrm{ptg\_level}_i[0] &= \mathrm{ptg\_capacity}_i,\\[0.2cm]
+\mathrm{prod}_i[t] - \mathrm{demand}_i[t] &è_+ \mathrm{phs\_out}_i[t]\times\mathrm{phs\_efficiency}_i \nonumber \\
+&+ \mathrm{ptg\_out}_i[t]\times\mathrm{ptg\_efficiency}_i \nonumber \\
+&- \mathrm{phs\_in}_i[t]
+- \mathrm{ptg\_in}_i[t] \nonumber \\
+&- \sum_{j=1}^n q_{ij}[t]
++ \sum_{j=1}^n q_{ji}[t]
+= \mathrm{surplus}_i[t]-\mathrm{deficit}_i[t], \\[0.2cm]
+\mathrm{phs\_in}_i[t] &\le \mathrm{phs\_power}_i,\\
+\mathrm{phs\_out}_i[t] &\le \mathrm{phs\_power}_i,\\
+\mathrm{phs\_level}_i[t] &\le \mathrm{phs\_capacity}_i,\\
+\mathrm{ptg\_in}_i[t] &\le \mathrm{ptg\_power\_in}_i,\\
+\mathrm{ptg\_out}_i[t] &\le \mathrm{ptg\_power\_out}_i,\\
+\mathrm{ptg\_level}_i[t] &\le \mathrm{ptg\_capacity}_i,\\
+\mathrm{phs\_level}_i[t] &= \mathrm{phs\_level}_i[t-1] \nonumber \\
+&+ \mathrm{phs\_in}_i\times\mathrm{phs\_efficiency}_i \nonumber \\
+& -\mathrm{phs\_out}_i[t],\\
+\mathrm{pts\_level}_i[t] &= \mathrm{ptg\_level}_i[t-1] \nonumber \\
+&+ \mathrm{ptg\_in}_i\times\mathrm{ptg\_efficiency}_i \nonumber \\
+& -\mathrm{ptg\_out}_i[t],\\
+\mathrm{deficit}_i[t](\mathrm{prod}_i[t] - \mathrm{demand}_i[t])&\ge 0,\\
+q_{ij}[t] &\le q^{\max}_{ij}.
+\end{align}\\
+\end{tcolorbox}
 
 
 \newpage
 
-%JUSQU'A LA -----------------------------------------------------------------------------------------------------------------------------------
+\section{Problèmes séparés à n pays}
+Le problème est décomposé en deux étapes successives : une optimisation spatiale des échanges, suivie d'une optimisation temporelle de la gestion des stocks pour chaque pays.
 
+\subsection{Optimisation des échanges : \texttt{solve\_flux\_interval}}
 
+Cette fonction calcule les flux optimaux $q_{t,i,j}$ pour ramener le bilan net de chaque pays dans un intervalle cible défini par ses capacités de stockage.
 
+\begin{tcolorbox}[colback=violet!5!white, colframe=blue!75!black, breakable]
+    \begin{align*}
+        \min_{q, \text{over}, \text{under}} \quad & \sum_{t=1}^T \sum_{i=1}^n \left( \sigma \cdot (\text{under}_{i}[t] + \text{over}_{i}[t]) + \sum_{j\neq i} q_{i,j}[t] \right)
+    \end{align*}
+    
+    sous les contraintes, $\forall t \in \{1,\dots,T\}$, $\forall i \in \{1,\dots,n\}$ :
+    
+    \begin{align}
+        r_{i}[t] &= \text{dispo\_initiale}_{i}[t] - \sum_{j \neq i} q_{i,j}[t] + \text{flux\_eff} \sum_{j \neq i} q_{j,i}[t] \\
+        r_{i}[t] - \text{over}_{i}[t] &\le tmax_i \\
+        r_{i}[t] + \text{under}_{i}[t] &\ge tmin_i \\
+        0 \le q_{i,j}[t] &\le qmax_{i,j} \\
+        \text{over}_{i}[t], \text{under}_{i}[t] &\ge 0
+    \end{align}
+\end{tcolorbox}
 
-%\bibliographystyle{abbrv}
-%\bibliography{References/sample}
+\newpage
+
+\subsection{Gestion du stockage local : \texttt{optimize\_storage}}
+Cette fonction optimise la stratégie de charge et décharge sur l'année pour un pays donné, en minimisant le déficit résiduel.
+
+\begin{tcolorbox}[colback=violet!5!white, colframe=blue!75!black, breakable]
+
+\begin{align*}
+\min \quad
+- \mathrm{ptg\_level}[T-1]
++ \sigma \times \mathrm{deficit(t)}
+\end{align*}
+
+sous les contraintes :
+
+\begin{align*}
+\mathrm{phs\_level}[0] &=\mathrm{phs\_capacity}/2,\\
+\mathrm{ptg\_level}[0] &= \mathrm{ptg\_capacity},\\[0.2cm]
+\mathrm{phs\_in}[t] &\le \mathrm{phs\_power},\\
+\mathrm{phs\_out}[t] &\le \mathrm{phs\_power},\\
+\mathrm{phs\_level}[t] &\le \mathrm{phs\_capacity},\\
+\mathrm{ptg\_in}[t] &\le \mathrm{ptg\_power\_in},\\
+\mathrm{ptg\_out}[t] &\le \mathrm{ptg\_power\_out},\\
+\mathrm{ptg\_level}[t] &\le \mathrm{ptg\_capacity},\\
+\mathrm{phs\_level}[t] &= \mathrm{phs\_level}[t-1] \nonumber \\
+&+ \mathrm{phs\_in}\times\mathrm{phs\_efficiency} \nonumber \\
+& -\mathrm{phs\_out}[t],\\
+\mathrm{ptg\_level}[t] &= \mathrm{ptg\_level}[t-1] \nonumber \\
+&+ \mathrm{ptg\_in}\times\mathrm{ptg\_efficiency} \nonumber \\
+& -\mathrm{ptg\_out}[t],\\
+\mathrm{prod}[t]+\mathrm{phs\_out}[t]\cdot\mathrm{flux\_eff}&+\\
+\mathrm{ptg\_out}[t]\cdot\mathrm{flux\_eff}+\mathrm{deficit}[t]&=\mathrm{demand}[t]+\mathrm{phs\_in}[t]\\
+&+\mathrm{ptg\_in}[t]+\mathrm{surplus}[t]\\
+\end{align*}
+\end{tcolorbox}
+
+\newpage
+
+\subsection{Coordination globale : \texttt{optimize}}
+
+La fonction \texttt{optimize} orchestre l'ensemble en définissant les potentiels de flexibilité comme cibles pour les échanges :
+\begin{itemize}[label=\textbullet]
+    \item \textbf{Cibles de flux} : Pour chaque pays $i$, les bornes de l'intervalle cible sont :
+    \begin{itemize}
+        \item $\mathrm{tmin}_i = -(\mathrm{phs\_power}_i + \mathrm{ptg\_power\_in}_i)$
+        \item $\mathrm{tmax}_i = \mathrm{phs\_power}_i + \mathrm{ptg\_power\_out}_i$
+    \end{itemize}
+    \item \textbf{Séquence} :
+    \begin{enumerate}
+        \item Calcul de la $\mathrm{dispo\_initiale} = \mathrm{prod} - \mathrm{demand}$.
+        \item Résolution des flux via \texttt{solve\_flux\_interval}.
+        \item Calcul des restes (positifs ou négatifs) après échanges et séparation en vecteurs de surplus et de déficit.
+        \item Résolution parallèle de \texttt{optimize\_storage} pour chaque pays $i \in \{1, \dots, n\}$ avec le surplus et le déficit calculé précédemment.
+    \end{enumerate}
+\end{itemize}
 
 \end{document}
