@@ -36,7 +36,7 @@ def charge_data() :
     return df_demand, df_solar, df_wind, solar_capacity, wind_capacity
 
 
-def transfo_multipays(N=5, df_demand, df_solar, df_wind, solar_capacity, wind_capacity) :
+def transfo_multipays(df_demand, df_solar, df_wind, solar_capacity, wind_capacity, N=5) :
     T = len(df_demand)
  
     assert T % N == 0, "T doit être divisible par N"
@@ -66,16 +66,5 @@ def capa_max_echanges() :
     capmax = pd.read_csv("data_exchange/links.csv",header=None, names=['a1','a2','links']).set_index(['a1','a2']).squeeze(axis=1)
     qmax7pays = np.reshape(capmax.values, (nb_pays_liste, nb_pays_liste))
     return qmax7pays
-
-
-#=====================================================
-#-----------------COMPLET-----------------------------
-#=====================================================
-
-
-
-#=====================================================
-#-----------------SEPARE------------------------------
-#=====================================================
 
 
