@@ -12,6 +12,7 @@ import pandas as pd
 #-----------------DONNEES-----------------------------
 #=====================================================
 
+# Chargement des données pour 1 pays du code jouet et définition des capacités requises
 def charge_data() :
     # Chargement des données
     df_solar = pd.read_csv('solar.csv')
@@ -35,7 +36,7 @@ def charge_data() :
 
     return df_demand, df_solar, df_wind, solar_capacity, wind_capacity
 
-
+# divise le jeu de donnée en N pour simuler N pays (à terme on utilisera plutôt de vraies données)
 def transfo_multipays(df_demand, df_solar, df_wind, solar_capacity, wind_capacity, N=5) :
     T = len(df_demand)
  
@@ -59,7 +60,7 @@ def transfo_multipays(df_demand, df_solar, df_wind, solar_capacity, wind_capacit
 
     return demand_N, solar_N, wind_N, solar_cap_N, wind_cap_N
 
-
+# Fonction de création de la matrice de capacités max d'échange à partir des données
 def capa_max_echanges() :
     pays =  pd.read_csv("data_exchange/areas.csv", header=None)
     nb_pays_liste = len(pays.values)

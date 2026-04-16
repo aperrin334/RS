@@ -1,11 +1,11 @@
 import numpy as np
-from scipy.optimize import linprog
-import pandas as pd
+#from scipy.optimize import linprog
+#import pandas as pd
 import pulp
-import networkx as nx
-import matplotlib.pyplot as plt
-from ipywidgets import interact, IntSlider
-from joblib import Parallel, delayed
+#import networkx as nx
+#import matplotlib.pyplot as plt
+#from ipywidgets import interact, IntSlider
+#from joblib import Parallel, delayed
 
 #=====================================================
 #-----------------COMPLET-----------------------------
@@ -62,10 +62,10 @@ def extract_results(prob, T, N,
         'ptg_out': ptg_out_array,
         'ptg_level': ptg_level_array,
 
-        'deficit': deficit_array,
-        'surplus': surplus_array,
+        'deficit_final': deficit_array, #nom de variable 'deficit' modifié
+        'surplus_final': surplus_array, #nom de variable 'surplus' modifié
 
-        'Echanges': q_array
+        'echanges': q_array
     }
 
 
@@ -73,7 +73,7 @@ def optimize(
     wind_profile, solar_profile, demand,
     wind_cap, solar_cap, qmax_matrix,
     phs_capacity=180, phs_power=9.3, phs_eff=0.75,
-    ptg_capacity=125000, ptg_power_in=7.66, ptg_power_out=32.93,
+    ptg_capacity=125000, ptg_init_rate=0.75, ptg_power_in=7.66, ptg_power_out=32.93,
     ptg_eff=0.4, penalisation=1e10, flux_eff=0.9
 ):
     
@@ -89,6 +89,7 @@ def optimize(
     phs_power: puissance max PHS en GW
     phs_efficiency: rendement PHS (aller-retour)
     ptg_capacity: capacité de stockage P2G en GWh
+    ptg_init_rate: taux initial de remplissage des stocks (entre 0 et 1)
     ptg_power_in: puissance max électrolyse en GW  
     ptg_power_out: puissance max reconversion en GW
     ptg_efficiency: rendement P2G (aller-retour)
@@ -150,7 +151,7 @@ def optimize(
     # Conditions initiales
     for i in range(N):
         prob += phs_level[0][i] == phs_capacity / 2
-        prob += ptg_level[0][i] == ptg_capacity
+        prob += ptg_level[0][i] == ptg_init_rate * ptg_capacity
 
     for t in range(T):
         for i in range(N):
@@ -193,12 +194,6 @@ def optimize(
                 )
 
                 prob += (
-
-
-
-
-
-                    
                     ptg_level[t][i]
                     == ptg_level[t-1][i]
                     + ptg_in[t][i] * ptg_eff

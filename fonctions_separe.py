@@ -10,12 +10,12 @@ from joblib import Parallel, delayed
 #=====================================================
 #-----------------SEPARE------------------------------
 #=====================================================
+# En fonction de V2 ou V3 les sorties ne sont pas exactement les mêmes donc il faut adapter l'affichage mais à terme on n'utilisera que la V3
 
 # Optimisation stockage 1 pays -----------------------
-
 def optimize_storage(prod, demand,
                     phs_capacity, phs_power, phs_eff,
-                    ptg_capacity, ptg_power_in, ptg_power_out, 
+                    ptg_capacity, ptg_init_rate, ptg_power_in, ptg_power_out, 
                     ptg_eff, penalisation):
     """
     Optimise la stratégie de stockage sur l'année avec contrainte cyclique
@@ -29,6 +29,7 @@ def optimize_storage(prod, demand,
     phs_power: puissance max PHS en GW
     phs_eff: rendement PHS (aller-retour)
     ptg_capacity: capacité de stockage P2G en GWh
+    ptg_init_rate: taux initial de remplissage des stocks (entre 0 et 1)
     ptg_power_in: puissance max électrolyse en GW  
     ptg_power_out: puissance max reconversion en GW
     ptg_eff: rendement P2G (aller-retour)
@@ -58,8 +59,8 @@ def optimize_storage(prod, demand,
     # Contraintes
     
     # Niveaux initiaux
-    prob += phs_level[0] == phs_capacity/2  # PHS à 50%
-    prob += ptg_level[0] == ptg_capacity    # P2G plein
+    prob += phs_level[0] == phs_capacity / 2  # PHS à 50%
+    prob += ptg_level[0] == ptg_init_rate * ptg_capacity    # P2G plein à <ptg_init_rate> %
     
     # Contraintes cycliques : les niveaux finaux doivent être égaux aux niveaux initiaux
     #prob += phs_level[T-1] == phs_level[0]
@@ -112,8 +113,7 @@ def optimize_storage(prod, demand,
     }
 
 # Optimisation des échanges N pays -------------------
-
-## Avec la V2 :
+## Avec la V2 : -> J'ai enlevé l'assertion demandant des capa max symétriques entre les pays mais il faudra vérifier que le code le traite bien correctement
 def solve_flux(surplus, deficit, qmax_matrix, flux_eff, penalisation):
     """
     Résout le flux optimal pour N pays et T périodes, avec PuLP.
@@ -193,7 +193,6 @@ def solve_flux(surplus, deficit, qmax_matrix, flux_eff, penalisation):
         'surplus' : new_surplus,
         'deficit' : new_deficit
     }
-
 ## Avec la V3 :
 def solve_flux_interval(dispo, qmax_matrix, flux_eff, targets, penalisation=1e10):
     T, N = dispo.shape
@@ -219,9 +218,8 @@ def solve_flux_interval(dispo, qmax_matrix, flux_eff, targets, penalisation=1e10
 
     # 3. Fonction Objectif
     # Minimiser les dépassements d'intervalle. 
-    # Optionnel : + 0.001 * q pour éviter les flux circulaires inutiles   
+    # Optionnel : + 0.001 * q pour éviter les flux circulaires inutiles
     prob += pulp.lpSum((penalisation *under[t][i] + over[t][i]) for t in range(T) for i in range(N)) + pulp.lpSum((q[t, i, j]) for t in range(T) for i in range(N) for j in range(N) if i != j)
-
 
     # 4. Contraintes de bilan
     for t in range(T):
@@ -268,13 +266,12 @@ def solve_flux_interval(dispo, qmax_matrix, flux_eff, targets, penalisation=1e10
     }
 
 # Combiner les deux optimisations --------------------
-
 ## Avec la V2 :
 def optimize2(
     wind_profile, solar_profile, demand,
     wind_cap, solar_cap, qmax_matrix,
     phs_capacity=180, phs_power=9.3, phs_eff=0.75,
-    ptg_capacity=125000, ptg_power_in=7.66, ptg_power_out=32.93,
+    ptg_capacity=125000, ptg_init_rate=0.75, ptg_power_in=7.66, ptg_power_out=32.93,
     ptg_eff=0.4, penalisation=1e10, flux_eff=0.9
 ):
 
@@ -300,7 +297,7 @@ def optimize2(
     def run_one_country(p):
         return optimize_storage(
             surplus_avant[:, p], deficit_avant[:, p], phs_capacity, phs_power, phs_eff, 
-            ptg_capacity, ptg_power_in, ptg_power_out, ptg_eff, penalisation
+            ptg_capacity, ptg_init_rate, ptg_power_in, ptg_power_out, ptg_eff, penalisation
         )
 
     result2 = Parallel(n_jobs=-1)(delayed(run_one_country)(p) for p in range(N))
@@ -341,5 +338,89 @@ def optimize2(
 
         'Echanges': echanges
     }
-
 ## Avec la V3 :
+def optimize3(
+    wind_profile, solar_profile, demand,
+    wind_cap, solar_cap, qmax_matrix,
+    phs_capacity=180, phs_power=9.3, phs_eff=0.75,
+    ptg_capacity=125000, ptg_init_rate=0.75, ptg_power_in=7.66, ptg_power_out=32.93,
+    ptg_eff=0.4, penalisation=1e10, flux_eff=0.9
+):
+
+    T, N = demand.shape
+    
+    # 1 - Calcul de la production et des disponibilitées
+    prod = (wind_cap * wind_profile + solar_cap * solar_profile)
+    dispo_initiale = prod - demand
+
+    # 2 - Définition de l'intervalle cible pour chaque pays
+    target_min = -(phs_power + ptg_power_in)  # Capacité à absorber le surplus
+    target_max = (phs_power + ptg_power_out)  # Capacité à combler le déficit
+    
+    # On crée la liste des targets pour solve_flux_interval
+    targets = [(target_min, target_max) for _ in range(N)]
+
+    # 3 - Calcul des échanges pour rentrer dans ces intervalles
+    result_flux = solve_flux_interval(
+        dispo_initiale, 
+        qmax_matrix, 
+        flux_eff, 
+        targets, 
+        penalisation
+    )
+
+    echanges = result_flux['flux']
+    balance_apres_echanges = result_flux['balances_finales']
+
+    # 4 - Optimisation du stockage pour chaque pays
+    # On sépare la balance en surplus/déficit pour rester compatible avec optimize_storage
+    surplus_pour_stockage = np.maximum(0, balance_apres_echanges)
+    deficit_pour_stockage = np.maximum(0, -balance_apres_echanges)
+
+    def run_one_country(p):
+        return optimize_storage(
+            surplus_pour_stockage[:, p], 
+            deficit_pour_stockage[:, p],
+            phs_capacity, phs_power, phs_eff,
+            ptg_capacity, ptg_init_rate, ptg_power_in, ptg_power_out, 
+            ptg_eff, penalisation
+        )
+        
+
+
+    result2 = Parallel(n_jobs=-1)(delayed(run_one_country)(p) for p in range(N))
+
+    # 5 - Rassemblement des résultats
+    phs_in, phs_out, phs_level = np.zeros((T, N)), np.zeros((T, N)), np.zeros((T, N))
+    ptg_in, ptg_out, ptg_level = np.zeros((T, N)), np.zeros((T, N)), np.zeros((T, N))
+    deficit_final, surplus_final = np.zeros((T, N)), np.zeros((T, N))
+
+    for p, res in enumerate(result2):
+        phs_in[:, p] = res['phs_in']
+        phs_out[:, p] = res['phs_out']
+        phs_level[:, p] = res['phs_level']
+        ptg_in[:, p] = res['ptg_in']
+        ptg_out[:, p] = res['ptg_out']
+        ptg_level[:, p] = res['ptg_level']
+        deficit_final[:, p] = res['deficit']
+        surplus_final[:, p] = res['surplus']
+
+    return {
+        'prod': prod,
+
+        'phs_in': phs_in,
+        'phs_out': phs_out,
+        'phs_level': phs_level,
+
+        'ptg_in': ptg_in,
+        'ptg_out': ptg_out,
+        'ptg_level': ptg_level,
+
+        'balance_initiale': dispo_initiale,
+        'balance_apres_echanges': balance_apres_echanges,
+
+        'deficit_final': deficit_final,
+        'surplus_final': surplus_final,
+
+        'echanges': echanges
+    }
