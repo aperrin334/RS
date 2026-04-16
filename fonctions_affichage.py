@@ -104,13 +104,10 @@ def plot_graphs(result, T_plot=4000, semaine=5) :
     plt.show()
 
 
-def plot_global_graph(result, demand_N, wind_N, wind_cap_N, solar_N, solar_cap_N, semaine=5) :
+def plot_global_graph(result, demand_N, wind_N, wind_cap_N, solar_N, solar_cap_N, ptg_eff, phs_eff, semaine=5) :
     # ===============================
     # Flux échanges
     # ===============================
-
-    ptg_eff=0.4
-    phs_eff = 0.75
     
     T0 = 168 * (semaine - 1)
     T1 = T0 + 168
