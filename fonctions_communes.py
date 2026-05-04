@@ -12,6 +12,37 @@ import pandas as pd
 #-----------------DONNEES-----------------------------
 #=====================================================
 
+def charge_demand() :
+    # Configuration des années et types
+    years = [2019, 2020, 2021, 2022, 2023]
+    N = len(years)
+
+    df_demand = pd.read_csv('./demand2050_ADEME.csv', header=None)
+    df_demand.columns = ["heures", "demande"]
+    # Pour la demande, on s'assure aussi qu'elle fait 8760
+    demand_values = df_demand['demande'].values[:8760]
+    demand_N = np.tile(demand_values * 2.5, (N, 1)).T
+
+    return demand_N
+
+def charge_demand_multi() :
+
+    demand = []
+    annual_demand = []
+
+    countries = pd.read_csv("./data_exchange/areas.csv", header=None)
+    for country in countries.values:
+        df_demand = pd.read_csv(f'./data_demand/demand_{country[0]}.csv', header=None)
+        df_demand.columns = ["heures", "demande"]
+        df_annual_demand = df_demand['demande'].sum()
+        df_demand_values = df_demand['demande'].values[:8760] * 2.5
+        demand.append(df_demand_values)
+        annual_demand.append(df_annual_demand)
+    demand = np.array(demand)
+    annual_demand = np.array(annual_demand)
+
+    return demand, annual_demand
+
 # Chargement des données pour 1 pays du code jouet et définition des capacités requises
 def charge_data() :
     # Chargement des données
@@ -35,6 +66,68 @@ def charge_data() :
     print(f"Capacités requises: éolien = {wind_capacity:.1f}GW, solaire = {solar_capacity:.1f}GW")
 
     return df_demand, df_solar, df_wind, solar_capacity, wind_capacity
+
+def charge_data_5years(multi = True):
+    # Configuration des années et types
+    years = [2019, 2020, 2021, 2022, 2023]
+    N = len(years)
+
+    solar_profiles = []
+    wind_profiles = []
+    wind_caps = []
+    solar_caps = []
+
+    if multi :
+        demand_N, annual_demand_N = charge_demand_multi()
+        demand_N = demand_N[:N,]
+        annual_demand_N = annual_demand_N[:N,]
+    else :
+        demand_N = charge_demand()
+        annual_demand = demand_N.sum()
+        annual_demand_N = np.tile(annual_demand, (N, 1))
+
+    for year in years:
+        # --- Traitement SOLAIRE ---
+        df_s = pd.read_csv(f"./data_climix/{year}/solar_{year}.csv")
+        s_vals = df_s['facteur_charge'].values
+        
+        # Force la taille à 8760
+        solar_fc = np.zeros(8760)
+        length_s = min(len(s_vals), 8760)
+        solar_fc[:length_s] = s_vals[:length_s]
+        solar_profiles.append(solar_fc)
+        
+        # --- Traitement ÉOLIEN ---
+        df_w = pd.read_csv(f"./data_climix/{year}/wind_onshore_{year}.csv")
+        w_vals = df_w['facteur_charge'].values
+        
+        # Initialisation du cumul éolien à 8760
+        wind_fc = np.zeros(8760)
+        length_w = min(len(w_vals), 8760)
+        wind_fc[:length_w] = w_vals[:length_w]
+        wind_profiles.append(wind_fc)
+        
+        # Calcul des capacités
+        ann_solar_gw = solar_fc.sum()
+        ann_wind_gw = wind_fc.sum()
+        
+        target_production = annual_demand_N[years.index(year)] * 3.5
+
+        wind_caps.append(target_production / (2 * ann_wind_gw))
+        solar_caps.append(target_production / (2 * ann_solar_gw))
+
+    # Maintenant toutes les listes font exactement 8760, la conversion marchera :
+    solar_N = np.array(solar_profiles).T
+    wind_N = np.array(wind_profiles).T
+    demand_N = demand_N.T
+
+    wind_cap_N = np.array(wind_caps)
+    solar_cap_N = np.array(solar_caps)
+
+
+    print(f"\nDonnées prêtes : Matrice Solaire {solar_N.shape}, Matrice Éolienne {wind_N.shape}")
+
+    return demand_N, solar_cap_N, wind_cap_N, solar_N, wind_N
 
 # divise le jeu de donnée en N pour simuler N pays (à terme on utilisera plutôt de vraies données)
 def transfo_multipays(df_demand, df_solar, df_wind, solar_capacity, wind_capacity, N=5) :
@@ -62,9 +155,9 @@ def transfo_multipays(df_demand, df_solar, df_wind, solar_capacity, wind_capacit
 
 # Fonction de création de la matrice de capacités max d'échange à partir des données
 def capa_max_echanges() :
-    pays =  pd.read_csv("data_exchange/areas.csv", header=None)
+    pays =  pd.read_csv("./data_exchange/areas.csv", header=None)
     nb_pays_liste = len(pays.values)
-    capmax = pd.read_csv("data_exchange/links.csv",header=None, names=['a1','a2','links']).set_index(['a1','a2']).squeeze(axis=1)
+    capmax = pd.read_csv("./data_exchange/links.csv",header=None, names=['a1','a2','links']).set_index(['a1','a2']).squeeze(axis=1)
     qmax7pays = np.reshape(capmax.values, (nb_pays_liste, nb_pays_liste))
     return qmax7pays
 

@@ -1,3 +1,5 @@
+from unittest import result
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -16,13 +18,14 @@ Format du résultat de SEPARE V3 :
     'deficit_final', 'surplus_final', 'echanges'
 '''
 
-def plot_graphs(result, T_plot=4000, semaine=5) :
+def plot_graphs(result, semaine=5) :
     '''
     result : dictionnaire solution d'un modèle (complet ou separe)
     T_plot : nombre d'heures représentées sur les graphes
     semaine : semaine représentée sur les graphes "zoomés"
     '''
 
+    T_plot=result['phs_level'].shape[0]
     N = result['phs_level'].shape[1]
 
     # --- Flux ---
