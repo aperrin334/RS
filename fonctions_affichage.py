@@ -25,6 +25,12 @@ def plot_graphs(result, semaine=5) :
     semaine : semaine représentée sur les graphes "zoomés"
     '''
 
+    # Sécurité pour gérer les deux noms de clés possibles
+    if 'deficit' in result and 'deficit_final' not in result:
+        result['deficit_final'] = result['deficit']
+    if 'surplus' in result and 'surplus_final' not in result:
+        result['surplus_final'] = result['surplus']
+
     T_plot=result['phs_level'].shape[0]
     N = result['phs_level'].shape[1]
 
@@ -37,7 +43,7 @@ def plot_graphs(result, semaine=5) :
     # GRAPHE GLOBAL (<T_plot> heures)
     # =====================================================
 
-    fig, axes = plt.subplots(6, N, figsize=(20, 14), sharex=True)
+    fig, axes = plt.subplots(6, N, figsize=(22, 14), sharex=True)
 
     for i in range(N):
         # PHS Level
@@ -78,7 +84,7 @@ def plot_graphs(result, semaine=5) :
     T0 = 168 * (semaine - 1)
     T1 = T0 + 168
 
-    fig, axes = plt.subplots(6, N, figsize=(20, 14), sharex=True)
+    fig, axes = plt.subplots(6, N, figsize=(22, 14), sharex=True)
 
     for i in range(N):
 
@@ -111,6 +117,12 @@ def plot_global_graph(result, demand_N, wind_N, wind_cap_N, solar_N, solar_cap_N
     # ===============================
     # Flux échanges
     # ===============================
+
+    # Sécurité pour gérer les deux noms de clés possibles
+    if 'deficit' in result and 'deficit_final' not in result:
+        result['deficit_final'] = result['deficit']
+    if 'surplus' in result and 'surplus_final' not in result:
+        result['surplus_final'] = result['surplus']
     
     T0 = 168 * (semaine - 1)
     T1 = T0 + 168
@@ -122,7 +134,7 @@ def plot_global_graph(result, demand_N, wind_N, wind_cap_N, solar_N, solar_cap_N
     imports = np.sum(q, axis=1)
     exports = np.sum(q, axis=2)
 
-    fig, axes = plt.subplots(N, 1, figsize=(16, 16), sharex=True)
+    fig, axes = plt.subplots(N, 1, figsize=(22, 16), sharex=True)
 
     for i in range(N):
 
@@ -224,7 +236,7 @@ def plot_energy_balance(
     Affiche le bilan énergétique pour N pays sur une période donnée.
 
     Paramètres :
-    - result : dictionnaire contenant les résultats du modèle (Echanges, phs_in, phs_out, etc.)
+    - result : dictionnaire contenant les résultats du modèle (echanges, phs_in, phs_out, etc.)
     - demand_N, wind_N, solar_N, wind_cap_N, solar_cap_N : données d'entrée
     - T0, T1 : indices de temps pour la période à afficher
     - semaine : numéro de semaine pour le titre
@@ -235,9 +247,15 @@ def plot_energy_balance(
     - figsize : taille de la figure
     """
 
+    # Sécurité pour gérer les deux noms de clés possibles
+    if 'deficit' in result and 'deficit_final' not in result:
+        result['deficit_final'] = result['deficit']
+    if 'surplus' in result and 'surplus_final' not in result:
+        result['surplus_final'] = result['surplus']
+
     N = demand_N.shape[1]
     time_axis = np.arange(T0, T1)
-    q = result["Echanges"]
+    q = result["echanges"]
 
     imports = np.sum(q, axis=1)
     exports = np.sum(q, axis=2)

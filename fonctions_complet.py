@@ -65,7 +65,7 @@ def extract_results(prob, T, N,
         'deficit': deficit_array,
         'surplus': surplus_array,
 
-        'Echanges': q_array
+        'echanges': q_array
     }
 
 
@@ -349,73 +349,6 @@ def optimize_5years(
                     - ptg_out[t][i]
                 )
 
-
-
-
-    # # =====================
-    # # Fonction objectif
-    # # =====================
-    # # 1. On retire la maximisation du stock final (-ptg_level) qui créait le vidage précoce
-    # # 2. On augmente la pénalité des échanges à 2.0 pour prioriser le stockage local
-    # prob += (
-    #     penalisation * pulp.lpSum(deficit[t][i] for t in range(T) for i in range(N)) 
-    #     + 2.0 * pulp.lpSum(q[t][i][j] for t in range(T) for i in range(N) for j in range(N) if i != j)
-    # )
-
-    # # =====================
-    # # Contraintes
-    # # =====================
-
-    # # Conditions initiales
-    # for i in range(N):
-    #     prob += phs_level[0][i] == phs_capacity / 2
-    #     prob += ptg_level[0][i] == ptg_capacity / 2  # Commencer à 50% est plus réaliste
-
-    # for t in range(T):
-    #     for i in range(N):
-    #         inflow  = pulp.lpSum(q[t][j][i] for j in range(N) if j != i)
-    #         outflow = pulp.lpSum(q[t][i][j] for j in range(N) if j != i)
-
-    #         # Bilan énergie (inchangé)
-    #         prob += (
-    #             prod[t, i] 
-    #             + phs_out[t][i] * phs_eff 
-    #             + ptg_out[t][i] * ptg_eff 
-    #             + inflow * flux_eff 
-    #             + deficit[t][i]
-    #             == 
-    #             demand[t, i] 
-    #             + phs_in[t][i] 
-    #             + ptg_in[t][i] 
-    #             + outflow 
-    #             + surplus[t][i]
-    #         )
-
-    #         # Limites (inchangé)
-    #         prob += phs_in[t][i]  <= phs_power
-    #         prob += phs_out[t][i] <= phs_power
-    #         prob += phs_level[t][i] <= phs_capacity
-    #         prob += ptg_in[t][i]  <= ptg_power_in
-    #         prob += ptg_out[t][i] <= ptg_power_out
-    #         prob += ptg_level[t][i] <= ptg_capacity
-
-    #         # Évolution des stocks
-    #         if t > 0:
-    #             prob += phs_level[t][i] == phs_level[t-1][i] + phs_in[t][i] * phs_eff - phs_out[t][i]
-    #             prob += ptg_level[t][i] == ptg_level[t-1][i] + ptg_in[t][i] * ptg_eff - ptg_out[t][i]
-
-    # # COMPLEMENT : Contrainte cyclique impérative pour éviter la disparition du surplus
-    # # On impose que le stock à la dernière heure soit égal au stock à la première heure
-    # for i in range(N):
-    #     prob += ptg_level[T-1][i] == ptg_level[0][i]
-    #     prob += phs_level[T-1][i] == phs_level[0][i]
-
-    #     # Contraintes échanges
-    #     for j in range(N):
-    #         if i != j:
-    #             prob += q[t][i][j] <= qmax_matrix[i, j]
-    #         else:
-    #             prob += q[t][i][j] == 0
 
     # =====================
     # Résolution

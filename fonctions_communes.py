@@ -21,7 +21,7 @@ def charge_demand() :
     df_demand.columns = ["heures", "demande"]
     # Pour la demande, on s'assure aussi qu'elle fait 8760
     demand_values = df_demand['demande'].values[:8760]
-    demand_N = np.tile(demand_values * 2.5, (N, 1)).T
+    demand_N = np.tile(demand_values * 2.5, (N, 1))
 
     return demand_N
 
@@ -83,8 +83,7 @@ def charge_data_5years(multi = True):
         annual_demand_N = annual_demand_N[:N,]
     else :
         demand_N = charge_demand()
-        annual_demand = demand_N.sum()
-        annual_demand_N = np.tile(annual_demand, (N, 1))
+        annual_demand_N = demand_N.sum(axis=1)
 
     for year in years:
         # --- Traitement SOLAIRE ---
@@ -160,5 +159,3 @@ def capa_max_echanges() :
     capmax = pd.read_csv("./data_exchange/links.csv",header=None, names=['a1','a2','links']).set_index(['a1','a2']).squeeze(axis=1)
     qmax7pays = np.reshape(capmax.values, (nb_pays_liste, nb_pays_liste))
     return qmax7pays
-
-

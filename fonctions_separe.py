@@ -336,7 +336,7 @@ def optimize2(
         'deficit': deficit,
         'surplus': surplus,
 
-        'Echanges': echanges
+        'echanges': echanges
     }
 ## Avec la V3 :
 def optimize3(
