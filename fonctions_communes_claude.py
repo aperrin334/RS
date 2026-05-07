@@ -30,7 +30,7 @@ def charge_demand_multi() :
     demand = []
     annual_demand = []
 
-    countries = pd.read_csv("./data_exchange/areas.csv", header=None)
+    countries = pd.read_csv("./data_exchange/areas_5countries.csv", header=None)
     for country in countries.values:
         df_demand = pd.read_csv(f'./data_demand/demand_{country[0]}.csv', header=None)
         # Les CSV n'ont pas de header : col 0 = heures, col 1 = demande
@@ -130,7 +130,7 @@ def charge_data_5years(multi = True):
 
 def charge_data_multi():
     # Configuration des années et types
-    countries = pd.read_csv("./data_exchange/areas.csv", header=None).squeeze("columns")
+    countries = pd.read_csv("./data_exchange/areas_5countries.csv", header=None).squeeze("columns")
     N = len(countries)
 
     solar_profiles = []
@@ -220,7 +220,7 @@ def transfo_multipays(df_demand, df_solar, df_wind, solar_capacity, wind_capacit
 
 # Fonction de création de la matrice de capacités max d'échange à partir des données
 def capa_max_echanges() :
-    pays =  pd.read_csv("./data_exchange/areas.csv", header=None)
+    pays =  pd.read_csv("./data_exchange/areas_5countries.csv", header=None)
     nb_pays_liste = len(pays.values)
     capmax = pd.read_csv("./data_exchange/links.csv",header=None, names=['a1','a2','links']).set_index(['a1','a2']).squeeze(axis=1)
     qmax7pays = np.reshape(capmax.values, (nb_pays_liste, nb_pays_liste))

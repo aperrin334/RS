@@ -224,7 +224,7 @@ def optimize_5years(
     wind_cap, solar_cap, qmax_matrix,
     phs_capacity=180, phs_power=9.3, phs_eff=0.75,
     ptg_capacity=125000, ptg_init_rate=0.75, ptg_power_in=7.66, ptg_power_out=32.93,
-    ptg_eff=0.4, penalisation=1e10, flux_eff=0.9
+    ptg_eff=0.4, penalisation=1e10, flux_eff=0.9,penalisation_echange=0.1
 ):
     
     """
@@ -290,7 +290,7 @@ def optimize_5years(
 
     prob += (
         pulp.lpSum(-ptg_level[T-1][i] for i in range(N))
-        + penalisation * pulp.lpSum(deficit[t][i] for t in range(T) for i in range(N)) + 0.1*pulp.lpSum(q[t][i][j] for t in range(T) for i in range(N) for j in range(N) if i != j
+        + penalisation * pulp.lpSum(deficit[t][i] for t in range(T) for i in range(N)) + penalisation_echange*pulp.lpSum(q[t][i][j] for t in range(T) for i in range(N) for j in range(N) if i != j
     ))
 
     # =====================
