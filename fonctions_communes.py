@@ -69,7 +69,7 @@ def charge_data() :
 
 def charge_data_5years(multi = True):
     # Configuration des années et types
-    years = [2019, 2020, 2021, 2022, 2023]
+    years = [2018, 2019, 2023, 2020, 2021, 2022, 2023]
     N = len(years)
 
     solar_profiles = []
