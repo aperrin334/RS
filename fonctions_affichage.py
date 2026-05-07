@@ -2,6 +2,7 @@ from unittest import result
 
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 '''
 Format du résultat de COMPLET :
@@ -91,6 +92,103 @@ def plot_graphs(result, semaine=5) :
         axes[0, i].plot(result['phs_level'][T0:T1, i], color='blue')
         if i == 0: axes[0, i].set_ylabel("PHS")
         axes[0, i].set_title(f"Pays {i+1}")
+
+        axes[1, i].plot(result['ptg_level'][T0:T1, i], color='green')
+        if i == 0: axes[1, i].set_ylabel("PtG")
+
+        axes[2, i].plot(result['deficit_final'][T0:T1, i], color='red')
+        if i == 0: axes[2, i].set_ylabel("Déficit final")
+
+        axes[3, i].plot(sent[T0:T1, i], color='orange')
+        if i == 0: axes[3, i].set_ylabel("Envoyé")
+
+        axes[4, i].plot(received[T0:T1, i], color='purple')
+        if i == 0: axes[4, i].set_ylabel("Reçu")
+        
+        axes[5, i].plot(result['surplus_final'][T0:T1, i], color='gray')
+        if i == 0: axes[5, i].set_ylabel("Surplus final")
+        axes[5, i].set_xlabel("Heures semaine")
+
+    plt.suptitle(f"Zoom — Semaine {semaine}", fontsize=16)
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_graphs_multi(result, semaine=5) :
+    '''
+    result : dictionnaire solution d'un modèle (complet ou separe)
+    T_plot : nombre d'heures représentées sur les graphes
+    semaine : semaine représentée sur les graphes "zoomés"
+    '''
+    countries = pd.read_csv("./data_exchange/areas.csv", header=None).squeeze("columns")
+    N = len(countries)
+
+    # Sécurité pour gérer les deux noms de clés possibles
+    if 'deficit' in result and 'deficit_final' not in result:
+        result['deficit_final'] = result['deficit']
+    if 'surplus' in result and 'surplus_final' not in result:
+        result['surplus_final'] = result['surplus']
+
+    T_plot=result['phs_level'].shape[0]
+    N = result['phs_level'].shape[1]
+
+    # --- Flux ---
+    q = result["echanges"]  # (T, N, N)
+    sent = np.sum(q, axis=2)
+    received = np.sum(q, axis=1)
+
+    # =====================================================
+    # GRAPHE GLOBAL (<T_plot> heures)
+    # =====================================================
+
+    fig, axes = plt.subplots(6, N, figsize=(22, 14), sharex=True)
+
+    for i in range(N):
+        # PHS Level
+        axes[0, i].plot(result['phs_level'][:T_plot, i], color='blue')
+        if i == 0: axes[0, i].set_ylabel("Stock PHS (MWh)")
+        axes[0, i].set_title(f"Pays {countries[i]}")
+
+        # PtG Level
+        axes[1, i].plot(result['ptg_level'][:T_plot, i], color='green')
+        if i == 0: axes[1, i].set_ylabel("Stock Gaz (MWh)")
+        
+        # Déficit (énergie non servie)
+        axes[2, i].plot(result['deficit_final'][:T_plot, i], color='red') # 'deficit' pour la v3 sur 1 an ?
+        if i == 0: axes[2, i].set_ylabel("Déficit (MW)")
+
+        # Flux sortants
+        axes[3, i].plot(sent[:T_plot, i], color='orange')
+        if i == 0: axes[3, i].set_ylabel("Export (MW)")
+
+        # Flux entrants
+        axes[4, i].plot(received[:T_plot, i], color='purple')
+        if i == 0: axes[4, i].set_ylabel("Import (MW)")
+
+        # Surplus (perdu ou non utilisé)
+        axes[5, i].plot(result['surplus_final'][:T_plot, i], color='gray') # 'surplus' dans la v3 1 an
+        if i == 0: axes[5, i].set_ylabel("Surplus (MW)")
+        axes[5, i].set_xlabel("Temps (Heures)")
+
+    plt.suptitle(f"Résultats sur {T_plot} heures", fontsize=16)
+    plt.tight_layout()
+    plt.show()
+
+
+    # =====================================================
+    # ZOOM SEMAINE
+    # =====================================================
+    
+    T0 = 168 * (semaine - 1)
+    T1 = T0 + 168
+
+    fig, axes = plt.subplots(6, N, figsize=(22, 14), sharex=True)
+
+    for i in range(N):
+
+        axes[0, i].plot(result['phs_level'][T0:T1, i], color='blue')
+        if i == 0: axes[0, i].set_ylabel("PHS")
+        axes[0, i].set_title(f"Pays {countries[i]}")
 
         axes[1, i].plot(result['ptg_level'][T0:T1, i], color='green')
         if i == 0: axes[1, i].set_ylabel("PtG")

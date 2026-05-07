@@ -33,9 +33,9 @@ def charge_demand_multi() :
     countries = pd.read_csv("./data_exchange/areas.csv", header=None)
     for country in countries.values:
         df_demand = pd.read_csv(f'./data_demand/demand_{country[0]}.csv', header=None)
-        df_demand.columns = ["heures", "demande"]
-        df_annual_demand = df_demand['demande'].sum()
-        df_demand_values = df_demand['demande'].values[:8760] * 2.5
+        # Les CSV n'ont pas de header : col 0 = heures, col 1 = demande
+        df_annual_demand = df_demand.iloc[:, 1].sum()
+        df_demand_values = df_demand.iloc[:8760, 1].values * 2.5
         demand.append(df_demand_values)
         annual_demand.append(df_annual_demand)
     demand = np.array(demand)
@@ -142,10 +142,11 @@ def charge_data_multi():
     demand_N = demand_N[:N,]
     annual_demand_N = annual_demand_N[:N,]
 
-    for country in countries.values:
+    for i, country in enumerate(countries.values):
         # --- Traitement SOLAIRE ---
-        df_s = pd.read_csv(f"./data_prod/countries_data/{country}/solar_{country}.csv")
-        s_vals = df_s['facteur_charge'].values
+        # Les CSV n'ont pas de header : col 0 = index horaire, col 1 = facteur de charge
+        df_s = pd.read_csv(f"./data_prod/countries_data/{country}/solar_{country}.csv", header=None)
+        s_vals = df_s.iloc[:, 1].values
         
         # Force la taille à 8760
         solar_fc = np.zeros(8760)
@@ -154,8 +155,8 @@ def charge_data_multi():
         solar_profiles.append(solar_fc)
         
         # --- Traitement ÉOLIEN ---
-        df_w = pd.read_csv(f"./data_prod/countries_data/{country}/wind_{country}.csv")
-        w_vals = df_w['facteur_charge'].values
+        df_w = pd.read_csv(f"./data_prod/countries_data/{country}/wind_{country}.csv", header=None)
+        w_vals = df_w.iloc[:, 1].values
         
         # Initialisation du cumul éolien à 8760
         wind_fc = np.zeros(8760)
@@ -167,7 +168,8 @@ def charge_data_multi():
         ann_solar_gw = solar_fc.sum()
         ann_wind_gw = wind_fc.sum()
         
-        target_production = annual_demand_N[countries.values.tolist().index(country)] * 3.5
+        # Utilisation de l'index i (enumerate) plutôt que .index() pour éviter les doublons
+        target_production = annual_demand_N[i] * 3.5
 
         if ann_wind_gw > 0:
             wind_caps.append(target_production / (2 * ann_wind_gw))
