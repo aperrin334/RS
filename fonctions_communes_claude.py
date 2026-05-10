@@ -222,6 +222,6 @@ def transfo_multipays(df_demand, df_solar, df_wind, solar_capacity, wind_capacit
 def capa_max_echanges() :
     pays =  pd.read_csv("./data_exchange/areas_5countries.csv", header=None)
     nb_pays_liste = len(pays.values)
-    capmax = pd.read_csv("./data_exchange/links.csv",header=None, names=['a1','a2','links']).set_index(['a1','a2']).squeeze(axis=1)
-    qmax7pays = np.reshape(capmax.values, (nb_pays_liste, nb_pays_liste))
-    return qmax7pays
+    capmax = pd.read_csv("./data_exchange/links_5countries.csv",header=None, names=['a1','a2','links']).set_index(['a1','a2']).squeeze(axis=1)
+    qmax5pays = np.reshape(capmax.values, (nb_pays_liste, nb_pays_liste))
+    return qmax5pays

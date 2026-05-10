@@ -348,6 +348,13 @@ def optimize_5years(
                     + ptg_in[t][i] * ptg_eff
                     - ptg_out[t][i]
                 )
+            
+            # Contraintes échanges
+            for j in range(N):
+                if i != j:
+                    prob += q[t][i][j] <= qmax_matrix[i, j]
+                else:
+                    prob += q[t][i][j] == 0
 
 
     # =====================
