@@ -192,8 +192,9 @@ def plot_graphs_multi(result, semaine=5) :
 
         axes[1, i].plot(result['ptg_level'][T0:T1, i], color='green')
         if i == 0: axes[1, i].set_ylabel("PtG stock (MW)")
+        
         axes[2, i].plot(result['deficit_final'][T0:T1, i], color='red')
-        if i == 0: axes[2, i].set_ylabel("Final deficit")
+        if i == 0: axes[2, i].set_ylabel("Final deficit (MW)")
 
         axes[3, i].plot(sent[T0:T1, i], color='orange')
         if i == 0: axes[3, i].set_ylabel("Exports (MW)")
@@ -399,7 +400,7 @@ def plot_global_graph_multi(result, demand_N, wind_N, wind_cap_N, solar_N, solar
                         loc='upper left', fontsize=10)
 
     axes[-1].set_xlabel("Time (hours)")
-    plt.suptitle(f"Energy Balance - Week {semaine}", fontsize=16)
+    plt.suptitle(f"Energy Balance - Week {semaine}, in MW", fontsize=16)
     plt.tight_layout()
     plt.show()
 
