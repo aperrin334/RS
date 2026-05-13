@@ -1,0 +1,217 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[french]{babel}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=3.1cm,right=2.6cm,marginparwidth=1.75cm]{geometry}
+
+% packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{lastpage}
+\usepackage{bbm}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{subfigure}
+\usepackage{setspace}
+\usepackage[T1]{fontenc}
+\usepackage{pdfpages}
+\usepackage{tcolorbox} % à mettre dans le préambule
+\tcbuselibrary{breakable} % pour permettre que la boîte se casse sur plusieurs pages si nécessaire
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{stmaryrd}
+\usepackage[T1]{fontenc}    % Pour la gestion des accents dans le PDF
+\usepackage[utf8]{inputenc}  % Pour lire les caractères spéciaux du fichier .tex
+\usepackage[french]{babel}   % Pour les règles de typographie française
+
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+
+\begin{document}
+
+\section{Données}
+
+Les données d'entrée et les variables du problèmes sont résumées dans la table qui suit :
+
+\begin{table}[H]
+\centering
+\caption{Données et variables du problème complet}
+\vspace{0.2 cm}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Données (paramètres connus)} & \textbf{Description} \\ 
+\midrule
+$n$ & Nombre de pays \\
+\addlinespace
+$T$ & Nombre de pas de temps \\
+\addlinespace
+$\sigma$ & Pénalisation des pénuries \\
+\addlinespace
+$flux\_eff$ & Efficacité des flux entre les pays \\
+\addlinespace
+$\mathrm{phs\_capacity}_i$ & Capacité de stockage PHS du pays $i$ \\
+\addlinespace
+$\mathrm{ptg\_capacity}_i$ & Capacité de stockage PTG du pays $i$ \\
+\addlinespace
+$\mathrm{phs\_power}_i$ & Puissance maximale de charge/décharge PHS du pays $i$ \\
+\addlinespace
+$\mathrm{ptg\_power\_in}_i, \mathrm{ptg\_power\_out}_i$ & Puissance maximale d'entrée/sortie PTG du pays $i$ \\
+\addlinespace
+$\mathrm{phs\_efficiency}_i, \mathrm{ptg\_efficiency}_i$ & Efficacité de conversion PHS/PTG du pays $i$ \\
+\addlinespace
+$\mathrm{prod}_i[t]$ & Production disponible au pays $i$ à l'heure $t$ \\
+\addlinespace
+$\mathrm{demand}_i[t]$ & Demande d'énergie au pays $i$ à l'heure $t$ \\
+\addlinespace
+$q_{ij}^{\max}$ & Capacité maximale d'échange d'énergie du pays $i$ vers $j$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+\begin{table}[H]
+\centering
+\vspace{0.2 cm}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Variables à optimiser} & \textbf{Description} \\
+\midrule
+$\mathrm{phs\_level}_i[t]$ & Niveau de stockage PHS du pays $i$ à l'heure $t$ \\
+\addlinespace
+$\mathrm{ptg\_level}_i[t]$ & Niveau de stockage PTG du pays $i$ à l'heure $t$ \\
+\addlinespace
+$\mathrm{phs\_in}_i[t], \mathrm{phs\_out}_i[t]$ & Puissance de charge/décharge PHS du pays $i$ à l'heure $t$ \\
+\addlinespace
+$\mathrm{ptg\_in}_i[t], \mathrm{ptg\_out}_i[t]$ & Puissance de charge/décharge PTG du pays $i$ à l'heure $t$ \\
+\addlinespace
+$\mathrm{deficit}_i[t]$ & Déficit d'électricité au pays $i$ à l'heure $t$ \\
+\addlinespace
+$\mathrm{surplus}_i[t]$ & Surplus d'électricité au pays $i$ à l'heure $t$ (électricité perdue) \\
+\addlinespace
+$q_{ij}[t]$ & Electricité échangée du pays $i$ vers $j$ à l'heure $t$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\newpage
+\section{Problème complet à n pays}
+
+\begin{tcolorbox}[colback=violet!5!white, colframe=blue!75!black, breakable]
+\begin{align*}
+\min \quad 
+& \sum_{i=1}^n - \mathrm{ptg\_level}_i[T-1]
++ \sigma \cdot \mathrm{deficit}_i(t),
+\end{align*}
+
+sous les contraintes, $\forall i \in \{1,\dots,n\}$ :
+
+\begin{align}
+\mathrm{phs\_level}_i[0] &=\mathrm{phs\_capacity}_i/2,\\
+\mathrm{ptg\_level}_i[0] &= \mathrm{ptg\_capacity}_i,\\[0.2cm]
+\mathrm{prod}_i[t] - \mathrm{demand}_i[t] &è_+ \mathrm{phs\_out}_i[t]\times\mathrm{phs\_efficiency}_i \nonumber \\
+&+ \mathrm{ptg\_out}_i[t]\times\mathrm{ptg\_efficiency}_i \nonumber \\
+&- \mathrm{phs\_in}_i[t]
+- \mathrm{ptg\_in}_i[t] \nonumber \\
+&- \sum_{j=1}^n q_{ij}[t]
++ \sum_{j=1}^n q_{ji}[t]
+= \mathrm{surplus}_i[t]-\mathrm{deficit}_i[t], \\[0.2cm]
+\mathrm{phs\_in}_i[t] &\le \mathrm{phs\_power}_i,\\
+\mathrm{phs\_out}_i[t] &\le \mathrm{phs\_power}_i,\\
+\mathrm{phs\_level}_i[t] &\le \mathrm{phs\_capacity}_i,\\
+\mathrm{ptg\_in}_i[t] &\le \mathrm{ptg\_power\_in}_i,\\
+\mathrm{ptg\_out}_i[t] &\le \mathrm{ptg\_power\_out}_i,\\
+\mathrm{ptg\_level}_i[t] &\le \mathrm{ptg\_capacity}_i,\\
+\mathrm{phs\_level}_i[t] &= \mathrm{phs\_level}_i[t-1] \nonumber \\
+&+ \mathrm{phs\_in}_i\times\mathrm{phs\_efficiency}_i \nonumber \\
+& -\mathrm{phs\_out}_i[t],\\
+\mathrm{pts\_level}_i[t] &= \mathrm{ptg\_level}_i[t-1] \nonumber \\
+&+ \mathrm{ptg\_in}_i\times\mathrm{ptg\_efficiency}_i \nonumber \\
+& -\mathrm{ptg\_out}_i[t],\\
+\mathrm{deficit}_i[t](\mathrm{prod}_i[t] - \mathrm{demand}_i[t])&\ge 0,\\
+q_{ij}[t] &\le q^{\max}_{ij}.
+\end{align}\\
+\end{tcolorbox}
+
+
+\newpage
+
+\section{Problèmes séparés à n pays}
+Le problème est décomposé en deux étapes successives : une optimisation spatiale des échanges, suivie d'une optimisation temporelle de la gestion des stocks pour chaque pays.
+
+\subsection{Optimisation des échanges : \texttt{solve\_flux\_interval}}
+
+Cette fonction calcule les flux optimaux $q_{t,i,j}$ pour ramener le bilan net de chaque pays dans un intervalle cible défini par ses capacités de stockage.
+
+\begin{tcolorbox}[colback=violet!5!white, colframe=blue!75!black, breakable]
+    \begin{align*}
+        \min_{q, \text{over}, \text{under}} \quad & \sum_{t=1}^T \sum_{i=1}^n \left( \sigma \cdot (\text{under}_{i}[t] + \text{over}_{i}[t]) + \sum_{j\neq i} q_{i,j}[t] \right)
+    \end{align*}
+    
+    sous les contraintes, $\forall t \in \{1,\dots,T\}$, $\forall i \in \{1,\dots,n\}$ :
+    
+    \begin{align}
+        r_{i}[t] &= \text{dispo\_initiale}_{i}[t] - \sum_{j \neq i} q_{i,j}[t] + \text{flux\_eff} \sum_{j \neq i} q_{j,i}[t] \\
+        r_{i}[t] - \text{over}_{i}[t] &\le tmax_i \\
+        r_{i}[t] + \text{under}_{i}[t] &\ge tmin_i \\
+        0 \le q_{i,j}[t] &\le qmax_{i,j} \\
+        \text{over}_{i}[t], \text{under}_{i}[t] &\ge 0
+    \end{align}
+\end{tcolorbox}
+
+\newpage
+
+\subsection{Gestion du stockage local : \texttt{optimize\_storage}}
+Cette fonction optimise la stratégie de charge et décharge sur l'année pour un pays donné, en minimisant le déficit résiduel.
+
+\begin{tcolorbox}[colback=violet!5!white, colframe=blue!75!black, breakable]
+
+\begin{align*}
+\min \quad
+- \mathrm{ptg\_level}[T-1]
++ \sigma \times \mathrm{deficit(t)}
+\end{align*}
+
+sous les contraintes :
+
+\begin{align*}
+\mathrm{phs\_level}[0] &=\mathrm{phs\_capacity}/2,\\
+\mathrm{ptg\_level}[0] &= \mathrm{ptg\_capacity},\\[0.2cm]
+\mathrm{phs\_in}[t] &\le \mathrm{phs\_power},\\
+\mathrm{phs\_out}[t] &\le \mathrm{phs\_power},\\
+\mathrm{phs\_level}[t] &\le \mathrm{phs\_capacity},\\
+\mathrm{ptg\_in}[t] &\le \mathrm{ptg\_power\_in},\\
+\mathrm{ptg\_out}[t] &\le \mathrm{ptg\_power\_out},\\
+\mathrm{ptg\_level}[t] &\le \mathrm{ptg\_capacity},\\
+\mathrm{phs\_level}[t] &= \mathrm{phs\_level}[t-1] \nonumber \\
+&+ \mathrm{phs\_in}\times\mathrm{phs\_efficiency} \nonumber \\
+& -\mathrm{phs\_out}[t],\\
+\mathrm{ptg\_level}[t] &= \mathrm{ptg\_level}[t-1] \nonumber \\
+&+ \mathrm{ptg\_in}\times\mathrm{ptg\_efficiency} \nonumber \\
+& -\mathrm{ptg\_out}[t],\\
+\mathrm{prod}[t]+\mathrm{phs\_out}[t]\cdot\mathrm{flux\_eff}&+\\
+\mathrm{ptg\_out}[t]\cdot\mathrm{flux\_eff}+\mathrm{deficit}[t]&=\mathrm{demand}[t]+\mathrm{phs\_in}[t]\\
+&+\mathrm{ptg\_in}[t]+\mathrm{surplus}[t]\\
+\end{align*}
+\end{tcolorbox}
+
+\newpage
+
+\subsection{Coordination globale : \texttt{optimize}}
+
+La fonction \texttt{optimize} orchestre l'ensemble en définissant les potentiels de flexibilité comme cibles pour les échanges :
+\begin{itemize}[label=\textbullet]
+    \item \textbf{Cibles de flux} : Pour chaque pays $i$, les bornes de l'intervalle cible sont :
+    \begin{itemize}
+        \item $\mathrm{tmin}_i = -(\mathrm{phs\_power}_i + \mathrm{ptg\_power\_in}_i)$
+        \item $\mathrm{tmax}_i = \mathrm{phs\_power}_i + \mathrm{ptg\_power\_out}_i$
+    \end{itemize}
+    \item \textbf{Séquence} :
+    \begin{enumerate}
+        \item Calcul de la $\mathrm{dispo\_initiale} = \mathrm{prod} - \mathrm{demand}$.
+        \item Résolution des flux via \texttt{solve\_flux\_interval}.
+        \item Calcul des restes (positifs ou négatifs) après échanges et séparation en vecteurs de surplus et de déficit.
+        \item Résolution parallèle de \texttt{optimize\_storage} pour chaque pays $i \in \{1, \dots, n\}$ avec le surplus et le déficit calculé précédemment.
+    \end{enumerate}
+\end{itemize}
+
+\end{document}
